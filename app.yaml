@@ -1,0 +1,12 @@
+runtime: php 
+env: flex 
+runtime_config: 
+    document_root: . 
+env_variables: 
+    APP_LOG: errorlog 
+    GOOGLE_STORAGE_BUCKET: "cs348demo.appspot.com" 
+    MYSQL_USER: "root" 
+    MYSQL_PASSWORD: "password" 
+    MYSQL_DSN: "mysql:dbname=cs348demo-db;unix_socket=/cloudsql/cs348demo-279320:us-east4:cs348demo-db" 
+beta_settings: 
+    cloud_sql_instances: "cs348demo-279320:us-east4:cs348demo-db"
