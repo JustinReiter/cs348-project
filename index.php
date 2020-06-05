@@ -15,12 +15,12 @@ require __DIR__ . '/env.php';
 use Google\Cloud\Storage\StorageClient;
 
 $app = array();
-$app['bucket_name'] = "cs348demo.appspot.com";
+$app['bucket_name'] = "cs348-project-279406.appspot.com";
 $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = "pokemon";
 $app['project_id'] = getenv('GCLOUD_PROJECT');
-$app['connection_name'] = "/cloudsql/cs348demo:us-central1:cs348demo-db";
+$app['connection_name'] = "/cloudsql/cs348-project-279406:us-east4:cs348-project-db-1";
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
@@ -31,10 +31,10 @@ $dbsocket = $app['connection_name'];
 
 // Create connection
 //for testing on localhost:8080
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname,3306);
+//$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
 
 //for deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
 
 
 // Check connection

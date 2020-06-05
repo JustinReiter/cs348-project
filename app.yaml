@@ -4,9 +4,9 @@ runtime_config:
     document_root: . 
 env_variables: 
     APP_LOG: errorlog 
-    GOOGLE_STORAGE_BUCKET: "cs348demo.appspot.com" 
+    GOOGLE_STORAGE_BUCKET: "cs348-project-279406.appspot.com"
     MYSQL_USER: "root" 
     MYSQL_PASSWORD: "password" 
-    MYSQL_DSN: "mysql:dbname=cs348demo-db;unix_socket=/cloudsql/cs348demo-279320:us-east4:cs348demo-db" 
+    MYSQL_DSN: "mysql:dbname=cs348-project-db-1;unix_socket=/cloudsql/cs348-project-279406:us-east4:cs348-project-db-1"
 beta_settings: 
-    cloud_sql_instances: "cs348demo-279320:us-east4:cs348demo-db"
+    cloud_sql_instances: "cs348-project-279406:us-east4:cs348-project-db-1"
