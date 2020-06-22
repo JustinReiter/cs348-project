@@ -1,0 +1,27 @@
+/ Pages
+
+- Login page
+- Pokemon Search (Justin)
+	- Favourite pokemon checkbox column
+- Party Analysis (Ben)
+	- Party pokemon table
+	- Stats?
+- Profile -> parties/favourite pokemon (Aidan)
+	- Basic profile info (joined_at date + name)
+	- Party table
+	- Favourite pokemon table
+- Share parties / view other players (Justin)
+	- Table of cards
+		- Each card = players party
+
+/ Databases
+
+- Pokemon (...)
+- Player (uid, name, pin, joined_at)
+- Party (uid, pid)
+- Pokemon_Instance (pid, pokedex_number, party_order, lvl, move1, move2, move3, move4)
+- Moves (mid, name, type, base_power)
+- Type_Matchups (attacking_type, defending_type, multiplier)
+- Favourite_pokemon (uid, pokedex_number)
+- Battle (gid, uid1, uid2, started_at)
+- Turn (turn_number, gid, player, move_at, mid, pokedex_number)

@@ -1,3 +1,4 @@
+-- Creates pokemon table to store the general information of every pokemon
 CREATE TABLE pokemon
 (
     attack integer NOT NULL,
@@ -22,3 +23,5 @@ CREATE TABLE pokemon
     gen integer NOT NULL,
     is_legendary tinyint NOT NULL
 );
+
+-- To import the pokemon afterwards, there are cli tools or the gui to upload the clean csv file into the table
