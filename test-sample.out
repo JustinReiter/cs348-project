@@ -1,0 +1,76 @@
++-----+-------------+---------+----------+-----+
+| pid | name        | type1   | type2    | gen |
++-----+-------------+---------+----------+-----+
+|   4 | Charmander  | fire    |          |   1 |
+|   5 | Charmeleon  | fire    |          |   1 |
+|   6 | Charizard   | fire    | flying   |   1 |
+|  37 | Vulpix      | fire    | ice      |   1 |
+|  38 | Ninetales   | fire    | ice      |   1 |
+|  58 | Growlithe   | fire    |          |   1 |
+|  59 | Arcanine    | fire    |          |   1 |
+|  77 | Ponyta      | fire    |          |   1 |
+|  78 | Rapidash    | fire    |          |   1 |
+| 105 | Marowak     | ground  | fire     |   1 |
+| 126 | Magmar      | fire    |          |   1 |
+| 136 | Flareon     | fire    |          |   1 |
+| 146 | Moltres     | fire    | flying   |   1 |
+| 155 | Cyndaquil   | fire    |          |   2 |
+| 156 | Quilava     | fire    |          |   2 |
+| 157 | Typhlosion  | fire    |          |   2 |
+| 218 | Slugma      | fire    |          |   2 |
+| 219 | Magcargo    | fire    | rock     |   2 |
+| 228 | Houndour    | dark    | fire     |   2 |
+| 229 | Houndoom    | dark    | fire     |   2 |
+| 240 | Magby       | fire    |          |   2 |
+| 244 | Entei       | fire    |          |   2 |
+| 250 | Ho-Oh       | fire    | flying   |   2 |
+| 255 | Torchic     | fire    |          |   3 |
+| 256 | Combusken   | fire    | fighting |   3 |
+| 257 | Blaziken    | fire    | fighting |   3 |
+| 322 | Numel       | fire    | ground   |   3 |
+| 323 | Camerupt    | fire    | ground   |   3 |
+| 324 | Torkoal     | fire    |          |   3 |
+| 390 | Chimchar    | fire    |          |   4 |
+| 391 | Monferno    | fire    | fighting |   4 |
+| 392 | Infernape   | fire    | fighting |   4 |
+| 467 | Magmortar   | fire    |          |   4 |
+| 485 | Heatran     | fire    | steel    |   4 |
+| 494 | Victini     | psychic | fire     |   5 |
+| 498 | Tepig       | fire    |          |   5 |
+| 499 | Pignite     | fire    | fighting |   5 |
+| 500 | Emboar      | fire    | fighting |   5 |
+| 513 | Pansear     | fire    |          |   5 |
+| 514 | Simisear    | fire    |          |   5 |
+| 554 | Darumaka    | fire    |          |   5 |
+| 555 | Darmanitan  | fire    | fire     |   5 |
+| 607 | Litwick     | ghost   | fire     |   5 |
+| 608 | Lampent     | ghost   | fire     |   5 |
+| 609 | Chandelure  | ghost   | fire     |   5 |
+| 631 | Heatmor     | fire    |          |   5 |
+| 636 | Larvesta    | bug     | fire     |   5 |
+| 637 | Volcarona   | bug     | fire     |   5 |
+| 643 | Reshiram    | dragon  | fire     |   5 |
+| 653 | Fennekin    | fire    |          |   6 |
+| 654 | Braixen     | fire    |          |   6 |
+| 655 | Delphox     | fire    | psychic  |   6 |
+| 662 | Fletchinder | fire    | flying   |   6 |
+| 663 | Talonflame  | fire    | flying   |   6 |
+| 667 | Litleo      | fire    | normal   |   6 |
+| 668 | Pyroar      | fire    | normal   |   6 |
+| 721 | Volcanion   | fire    | water    |   6 |
+| 725 | Litten      | fire    |          |   7 |
+| 726 | Torracat    | fire    |          |   7 |
+| 727 | Incineroar  | fire    | dark     |   7 |
+| 741 | Oricorio    | fire    | flying   |   7 |
+| 757 | Salandit    | poison  | fire     |   7 |
+| 758 | Salazzle    | poison  | fire     |   7 |
+| 776 | Turtonator  | fire    | dragon   |   7 |
++-----+-------------+---------+----------+-----+
+64 rows in set (0.04 sec)
+
++-------+------+---------------------+------+
+| name  | pin  | joined_at           | uid  |
++-------+------+---------------------+------+
+| admin | 0000 | 2020-06-13 20:31:32 |    1 |
++-------+------+---------------------+------+
+1 row in set (0.03 sec)
