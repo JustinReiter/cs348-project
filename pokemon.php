@@ -1,8 +1,14 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
 <title>Pokemon Searcher</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <style>
 .error {color: #FF0000;}
 </style>
@@ -49,8 +55,15 @@ if ($conn->connect_error) {
 $nameErr = $dexNumErr = $typeErr = "";
 $name = $dexNum = $type = "";
 
+// Redirects user to login page if no login data found
+if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
+	header("Location: ./index.php");
+	exit();
+}
+
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  
   // Check if name is valid
   if (empty($_POST["name"])) {
     $name = "";
@@ -92,7 +105,15 @@ function test_input($data) {
 
 <div id="navbar">
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" href="#">CS348 Project</a>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">CS348 Project</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+	<li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
+	<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
+      </ul>
+    </div>
   </nav>
 </div>
 

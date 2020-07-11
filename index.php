@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -43,11 +46,11 @@ $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-// echo "\nConnected successfully\n";
 
 // Initialization empty variables
 $nameErr = $pinErr = $loginErr = "";
 $name = $pin = "";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   
@@ -65,7 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["pin"])) {
     $pinErr = "Pin cannot be empty";
   } else {
-    $pin = test_input($_POST["pin"]);
+    if (!preg_match("/^[0-9]*$/", $_POST["pin"]) || strlen($_POST["pin"]) != 4) {
+      $pinErr = "Pin must only contain 4 numbers";
+    } else {
+      $pin = test_input($_POST["pin"]);
+    }
   }
 }
 
@@ -79,7 +86,9 @@ function test_input($data) {
 
 <div id="navbar">
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" href="#">CS348 Project</a>
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">CS348 Project</a>
+    </div>
   </nav>
 </div>
 
@@ -94,24 +103,49 @@ function test_input($data) {
     </div>
     <span class="error"><?php echo $nameErr;?></span>
     <div class="form-group">
-      <label for="player-pin">Pin:</label>
-      <input class="form-control" id="player-pin" type="password" name="pin" value="<?php echo $dexNum;?>">
+      <label for="player-pin">Pin (4 numbers):</label>
+      <input class="form-control" id="player-pin" type="password" name="pin" value="">
     </div>
-    <span class="error"><?php echo $pinErr;?></span>
-    <input class="btn btn-primary" type="submit" name="submit" value="Submit">
+    <div>
+    	<span class="error"><?php echo $pinErr;?></span>
+    </div>
+    <button class="btn btn-primary" type="submit" name="submit" value="Submit">Login</button>
+    <button class="btn btn-primary" type="submit" name="create" value"Create">Create New Account</button>
   </form>
 </div>
 
 <?php
-$query = "SELECT * FROM players WHERE name='$name' AND pin='$pin'";
-if ($result = $conn -> query($query) -> fetch_row()) {
+
+$query = "SELECT * FROM players WHERE name='$name'";
+
+if (isset($_POST["submit"])) {
+	$query = $query . " AND pin='$pin'";
+}
+
+if (!$nameErr && !$pinErr && $result = $conn -> query($query) -> fetch_row()) {
 	if ($result) {
+		$_SESSION['name'] = $name;
+		$_SESSION['uid'] = $result[0];
 		header('Location: /pokemon.php');
 		exit();
 	}
   $result -> free_result();
 } else {
-	$loginErr = "Username and pin combination is incorrect.";
+	if (!$nameErr && !$pinErr && isset($_POST["create"])) {
+		$uidquery = "SELECT max(uid)+1 FROM players";
+		$uid = $conn -> query($uidquery) -> fetch_row();
+		$insert = "INSERT INTO players (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
+		if ($conn -> query($insert) === TRUE) {
+                	$_SESSION['name'] = $name;
+			$_SESSION['uid'] = $uid[0];
+			header('Location: /pokemon.php');
+			exit();
+		} else {
+			$loginErr = "Unable to connect.";
+		}
+	} elseif (isset($_POST["submit"])) {
+		$loginErr = "Username and pin combination is incorrect.";
+	}
 }
 $conn -> close();
 ?>
