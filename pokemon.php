@@ -5,10 +5,42 @@ session_start();
 <html>
 <head>
 <title>Pokemon Searcher</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+	function favourite(uid, pid) {
+		$.ajax({
+		url: './favouritePokemon.php',
+		type: 'POST',
+		data: {favourite: true, uid: uid, pid: pid},
+		success: function(data) {
+			data = $.parseJSON(data);
+			if (data.success) {
+				document.getElementById("pkm-" + pid).className = "fa fa-heart";
+				document.getElementById("pkm-a-" + pid).setAttribute("onclick", "unfavourite(" + uid + "," + pid + ");");
+			}
+		}
+		});
+
+	}
+
+	function unfavourite(uid, pid) {
+		$.ajax({
+		url: './favouritePokemon.php',
+		type: 'POST',
+		data: {favourite: false, uid: uid, pid: pid},
+		success: function(data) {
+			data = $.parseJSON(data);
+			if (data.success) {
+				document.getElementById("pkm-" + pid).className = "fa fa-heart-o";
+				document.getElementById("pkm-a-" + pid).setAttribute("onclick", "favourite(" + uid + "," + pid + ");");
+			}
+		}
+		});
+	}
+</script>
 <style>
 .error {color: #FF0000;}
 </style>
@@ -168,8 +200,13 @@ echo "<thead>";
     echo "<th>Classification</th>";
     echo "<th>Primary Type</th>";
     echo "<th>Secondary Type</th>";
+    echo "<th>Favourited</th>";
   echo "</tr>";
 echo "</thead>";
+
+$favouriteQuery = "SELECT pid FROM favourite_pokemon WHERE uid=".$_SESSION['uid']." ORDER BY pid";
+$favouriteArr = $conn -> query($favouriteQuery) -> fetch_all();
+$pointer = 0;
 if ($result = $conn -> query($finalQuery)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
@@ -178,6 +215,15 @@ if ($result = $conn -> query($finalQuery)) {
       echo "<td>" . $row[2] . "</td>";
       echo "<td>" . $row[3] . "</td>";
       echo "<td>" . $row[4] . "</td>";
+      while ($favouriteArr && count($favouriteArr) > $pointer && $favouriteArr[$pointer][0] < $row[0]) {
+	      $pointer = $pointer + 1;
+      } 
+      if ($favouriteArr && count($favouriteArr) > $pointer && $favouriteArr[$pointer][0] == $row[0] ) {
+	      echo "<td><a id='pkm-a-".$row[0]."' href='javascript:;' onclick='unfavourite(".$_SESSION['uid'].",".$row[0].")' ><span id='pkm-".$row[0]."' class='fa fa-heart'></span></a></td>";
+	      $pointer = $pointer + 1;
+      } else {
+	      echo "<td><a id='pkm-a-".$row[0]."' href='javascript:;' onclick='favourite(".$_SESSION['uid'].",".$row[0].")' ><span id='pkm-".$row[0]."' class='fa fa-heart-o'></span></a></td>";
+      }
     echo "</tr>";
   }
   $result -> free_result();
@@ -187,7 +233,7 @@ echo "</div>";
 
 $conn -> close();
 ?>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
