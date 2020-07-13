@@ -142,7 +142,8 @@ function test_input($data) {
         <a class="navbar-brand" href="#">CS348 Project</a>
       </div>
       <ul class="nav navbar-nav navbar-right">
-	<li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
+  <li class="nav-item"><a class="nav-link" href="pokemon.php"> Search Pokemon </a></li>
+	<li class="nav-item"><a class="nav-link" href="profile.php"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
 	<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
       </ul>
     </div>
