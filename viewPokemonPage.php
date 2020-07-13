@@ -108,17 +108,21 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 <div class="container" style="padding-top:4%">
 	<div class="card">
 		<div class="row no gutters">
-		<div class="col-md-4">
-			<img src"" class="card-img" alt="Text">
-		</div>
-		<div class="col-md-4">
-			<div class="card-body">
 <?php
 
 if (isset($_GET["pkm"])) {
 	$query = "SELECT * FROM pokemon WHERE pid=".$_GET["pkm"].";";
 	$result = $conn -> query($query) -> fetch_all(MYSQLI_ASSOC);
 	$result = $result[0];
+
+	echo '<div class="col-md-4">';
+		echo '<img src="img/' . $result["pid"] . '.png" class="card-img" alt="' . $result["name"] . ' image" style="padding-left: 2%; padding-top: 2%;">';
+	echo '</div>';
+	echo '<div class="col-md-4">';
+	echo '<div class="card-body">';
+
+
+
 	echo "<h5 class='card-title'>" . $result["name"] . "</h5>";
 	
 	echo "<p class='card-text'>Pokedex Number: " . $result["pid"] . "</p>";
