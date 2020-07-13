@@ -64,10 +64,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
   
-  // Check if dexNum is valid
+  // Check if pin is valid
   if (empty($_POST["pin"])) {
     $pinErr = "Pin cannot be empty";
   } else {
+    // pin must be 4 numbers
     if (!preg_match("/^[0-9]*$/", $_POST["pin"]) || strlen($_POST["pin"]) != 4) {
       $pinErr = "Pin must only contain 4 numbers";
     } else {
@@ -87,7 +88,7 @@ function test_input($data) {
 <div id="navbar">
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">CS348 Project</a>
+      <a class="navbar-brand" href="#" >CS348 Project</a>
     </div>
   </nav>
 </div>
@@ -118,35 +119,46 @@ function test_input($data) {
 
 $query = "SELECT * FROM players WHERE name='$name'";
 
+// Add pin check if loggin in
 if (isset($_POST["submit"])) {
 	$query = $query . " AND pin='$pin'";
 }
 
-if (!$nameErr && !$pinErr && $result = $conn -> query($query) -> fetch_row()) {
-	if ($result) {
-		$_SESSION['name'] = $name;
-		$_SESSION['uid'] = $result[0];
-		header('Location: /pokemon.php');
-		exit();
-	}
-  $result -> free_result();
-} else {
-	if (!$nameErr && !$pinErr && isset($_POST["create"])) {
-		$uidquery = "SELECT max(uid)+1 FROM players";
-		$uid = $conn -> query($uidquery) -> fetch_row();
-		$insert = "INSERT INTO players (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
-		if ($conn -> query($insert) === TRUE) {
-                	$_SESSION['name'] = $name;
-			$_SESSION['uid'] = $uid[0];
+// If name or pin (only during login -- not signup) contains an error, skip check
+if (empty($nameErr) && (!isset($_POST["submit"]) || empty($pinErr))) {
+	$result = $conn -> query($query) -> fetch_row();
+
+	if (isset($_POST["submit"])) {
+		// Check if player credentials matches input
+		if (!empty($result)) {
+			// Store name and uid in session storage
+			$_SESSION['name'] = $name;
+			$_SESSION['uid'] = $result[0];
 			header('Location: /pokemon.php');
 			exit();
 		} else {
-			$loginErr = "Unable to connect.";
+			$loginErr = "Username and pin combination is incorrect.";
 		}
-	} elseif (isset($_POST["submit"])) {
-		$loginErr = "Username and pin combination is incorrect.";
+	} elseif (isset($_POST["create"])) {
+		// Check if any player exists with name -- make new new player not
+		if (empty($result)) {
+			$uidquery = "SELECT max(uid)+1 FROM players";
+			$uid = $conn -> query($uidquery) -> fetch_row();
+			$insert = "INSERT INTO players (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
+			if ($conn -> query($insert) === TRUE) {
+                		$_SESSION['name'] = $name;
+				$_SESSION['uid'] = $uid[0];
+				header('Location: /pokemon.php');
+				exit();
+			} else {
+				$loginErr = "Unable to connect.";
+			}
+		} else {
+			$loginErr = "A user with that name already exists.";
+		}
 	}
 }
+
 $conn -> close();
 ?>
 <div class="container">
