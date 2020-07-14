@@ -1,3 +1,4 @@
 env.php
 app.yaml
-
+composer.lock
+vendor/*

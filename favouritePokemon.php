@@ -11,22 +11,22 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
-$app['debug'] = getenv('DEBUG');
+$app['prod'] = getenv('PROD');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
-$debug = $app['debug'];
+$debug = $app['prod'];
 
 $conn = null;
-if ($debug) {
-  // Testing
-  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-} else {
+if ($prod) {
   // Deployment
   $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+} else {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, "pokemon", 3306);
 }
 
 // Check connection
@@ -54,3 +54,4 @@ if (isset($_POST['favourite']) && isset($_POST['uid']) && isset($_POST['pid']) &
 
 
 ?>
+
