@@ -15,10 +15,16 @@ CREATE TABLE pokemon_inst
     exp integer NOT NULL,
     nickname VARCHAR(16) NOT NULL,
     gender VARCHAR(8) NOT NULL,
-    move_1 varchar(16)  NOT NULL FOREIGN KEY REFERENCES move(move_name),
-    move_2 varchar(16) FOREIGN KEY REFERENCES move(move_name),
-    move_3 varchar(16) FOREIGN KEY REFERENCES move(move_name),
-    move_4 varchar(16) FOREIGN KEY REFERENCES move(move_name),
-    pid integer NOT NULL FOREIGN KEY REFERENCES pokemon(pid),
-    uid integer NOT NULL FOREIGN KEY REFERENCES player(uid)
+    move_1 varchar(16)  NOT NULL,
+    move_2 varchar(16),
+    move_3 varchar(16),
+    move_4 varchar(16),
+    pid integer NOT NULL,
+    uid integer NOT NULL,
+    FOREIGN KEY(move_1) REFERENCES move(move_name),
+    FOREIGN KEY(move_2) REFERENCES move(move_name),
+    FOREIGN KEY(move_3) REFERENCES move(move_name),
+    FOREIGN KEY(move_4) REFERENCES move(move_name),
+    FOREIGN KEY(uid) REFERENCES player(uid),
+    FOREIGN KEY(pid) REFERENCES pokemon(pid)
 );

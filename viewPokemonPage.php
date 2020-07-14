@@ -35,7 +35,7 @@ $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
-$debug = $app['prod'];
+$prod = $app['prod'];
 
 $conn = null;
 if ($prod) {
@@ -67,7 +67,9 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
         <a class="navbar-brand" href="./pokemon.php">CS348 Project</a>
       </div>
       <ul class="nav navbar-nav navbar-right">
-	<li class="nav-item"><a class="nav-link" href="pokemon.php"> Search Pokemon </a></li>
+    <li class="nav-item"><a class="nav-link" href="pokemon.php"> Search Pokemon </a></li>
+    <li class="nav-item"><a class="nav-link" href="catchPokemon.php"> Catch Pokemon </a></li>
+    <li class="nav-item"><a class="nav-link" href="organizePokemon.php"> Organize Pokemon </a></li>
 	<li class="nav-item"><a class="nav-link" href="profile.php"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
 	<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
       </ul>
@@ -86,12 +88,10 @@ if (isset($_GET["pkm"])) {
 	$result = $result[0];
 
 	echo '<div class="col-md-4">';
-		echo '<img src="img/' . $result["pid"] . '.png" class="card-img" alt="' . $result["name"] . ' image" style="padding-left: 2%; padding-top: 2%;">';
+	echo '<img src="img/' . $result["pid"] . '.png" class="card-img" alt="' . $result["name"] . ' image" style="padding-left: 2%; padding-top: 2%;">';
 	echo '</div>';
 	echo '<div class="col-md-4">';
 	echo '<div class="card-body">';
-
-
 
 	echo "<h5 class='card-title'>" . $result["name"] . "</h5>";
 
@@ -110,9 +110,7 @@ if (isset($_GET["pkm"])) {
 	echo "<p class='card-text'>Weight: " . $result["weight"] . " kg</p>";
 	echo "<p class='card-text'>Percent male: " . $result["percent_male"] . "%</p>";
 
-
 	echo "</div></div><div class='col-md-4'><div class='card-body'><br>";
-
 
 	echo "<p class='card-text'>Base HP: " . $result["base_hp"] . "</p>";
 	echo "<p class='card-text'>Base Attack: " . $result["base_attack"] . "</p>";

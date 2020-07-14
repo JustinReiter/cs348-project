@@ -18,7 +18,7 @@ $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
-$debug = $app['prod'];
+$prod = $app['prod'];
 
 $conn = null;
 if ($prod) {

@@ -1,5 +1,7 @@
 cs348-project
 
+### TO-DO: UPDATE
+
 ###########################################################################
 
 How to create and load sample database to GCP:
@@ -38,8 +40,19 @@ gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:W
 # Give service account read permission for relevant csv in bucket
 gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:R gs://cs348_pokemon_project_bucket/pokemon_clean.csv
 
+
+### No longer import with csv.
+# instead create sql insert script with https://www.convertcsv.com/csv-to-sql.htm
 # Import csv to database
-gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/pokemon_clean.csv --database=pokemon --table=pokedex
+# WARNING: IMPORT SEEMS TO NOT HANDLE NULL PROPERLY 
+# (E.G. BLANKS ARE PARSED AS 0 OR AN EMPTY VARCHAR RATHER THAN NULL)
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/type_matchup.csv --database=pokemon --table=type_matchup
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/pokemon_clean.csv --database=pokemon --table=pokemon
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_dummy.csv --database=pokemon --table=move
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_learn_dummy.csv --database=pokemon --table=learnable_move
 
 # Test Locally
 

@@ -32,7 +32,7 @@ $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
-$debug = $app['prod'];
+$prod = $app['prod'];
 
 $conn = null;
 if ($prod) {
@@ -143,9 +143,9 @@ if (empty($nameErr) && (!isset($_POST["submit"]) || empty($pinErr))) {
 	} elseif (isset($_POST["create"])) {
 		// Check if any player exists with name -- make new new player not
 		if (empty($result)) {
-			$uidquery = "SELECT max(uid)+1 FROM player";
-			$uid = $conn -> query($uidquery) -> fetch_row();
-			$insert = "INSERT INTO player (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
+			$insert = "INSERT INTO player (uid, name, pin, joined_at) VALUES(null, '$name', '$pin', now())";
+      $uidquery = "SELECT uid FROM player WHERE name = '$name'";
+      $uid = $conn -> query($uidquery) -> fetch_row();
 			if ($conn -> query($insert) === TRUE) {
                 		$_SESSION['name'] = $name;
 				$_SESSION['uid'] = $uid[0];
