@@ -6,12 +6,11 @@ require __DIR__ . '/env.php';
 use Google\Cloud\Storage\StorageClient;
 
 $app = array();
-$app['bucket_name'] = "cs348demo.appspot.com";
+$app['bucket_name'] = getenv('GOOGLE_STORAGE_BUCKET');
 $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
-$app['mysql_dbname'] = "pokemon";
-$app['project_id'] = getenv('GCLOUD_PROJECT');
-$app['connection_name'] = "/cloudsql/cs348demo-279318:us-central1:cs348demo-db";
+$app['mysql_dbname'] = getenv('MYSQL_DBNAME');
+$app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];

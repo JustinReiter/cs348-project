@@ -1,0 +1,60 @@
+mysql> SELECT pid, name, type1, type2, gen FROM pokemon WHERE type1="fire" OR type2="fire" LIMIT 10;
++-----+------------+--------+--------+-----+
+| pid | name       | type1  | type2  | gen |
++-----+------------+--------+--------+-----+
+|   4 | Charmander | fire   |        |   1 |
+|   5 | Charmeleon | fire   |        |   1 |
+|   6 | Charizard  | fire   | flying |   1 |
+|  37 | Vulpix     | fire   | ice    |   1 |
+|  38 | Ninetales  | fire   | ice    |   1 |
+|  58 | Growlithe  | fire   |        |   1 |
+|  59 | Arcanine   | fire   |        |   1 |
+|  77 | Ponyta     | fire   |        |   1 |
+|  78 | Rapidash   | fire   |        |   1 |
+| 105 | Marowak    | ground | fire   |   1 |
++-----+------------+--------+--------+-----+
+10 rows in set (0.04 sec)
+
+mysql> SELECT * FROM pokemon WHERE pid=483;
++--------+----------------+----------------+------------+--------------+-------------------+---------+---------+--------+-----+--------+--------------+-----+--------+--------+-------+-------+--------+--------+-----+--------------+
+| attack | base_egg_steps | base_happiness | base_total | capture_rate | classification    | defense | exp     | height | hp  | name   | percent_male | pid | sp_atk | sp_def | speed | type1 | type2  | weight | gen | is_legendary |
++--------+----------------+----------------+------------+--------------+-------------------+---------+---------+--------+-----+--------+--------------+-----+--------+--------+-------+-------+--------+--------+-----+--------------+
+|    120 |          30720 |              0 |        680 |            3 | Temporal Pokémon  |     120 | 1250000 |    5.4 | 100 | Dialga |            0 | 483 |    150 |    100 |    90 | steel | dragon |    683 |   4 |            1 |
++--------+----------------+----------------+------------+--------------+-------------------+---------+---------+--------+-----+--------+--------------+-----+--------+--------+-------+-------+--------+--------+-----+--------------+
+1 row in set (0.04 sec)
+
+
+mysql> SELECT * FROM players WHERE name="admin";
++-----+-------+------+---------------------+
+| uid | name  | pin  | joined_at           |
++-----+-------+------+---------------------+
+|   0 | admin | 0000 | 2020-07-11 15:31:44 |
++-----+-------+------+---------------------+
+1 row in set (0.03 sec)
+
+mysql> INSERT INTO players (uid, name, pin, joined_at) VALUES ("10", "New Player", "1111", now());
+Query OK, 1 row affected (0.04 sec)
+
+
+mysql> SELECT * FROM favourite_pokemon WHERE uid=0;
++-----+-----+
+| uid | pid |
++-----+-----+
+|   0 |   1 |
+|   0 |   3 |
+|   0 |   4 |
+|   0 |   5 |
+|   0 |   7 |
+|   0 |  10 |
+|   0 |  14 |
+|   0 |  16 |
+|   0 | 484 |
++-----+-----+
+9 rows in set (0.04 sec)
+
+mysql> INSERT INTO favourite_pokemon (uid, pid) VALUES (0, 483);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> DELETE FROM favourite_pokemon WHERE uid=0 AND pid=483;
+Query OK, 1 row affected (0.04 sec)
+

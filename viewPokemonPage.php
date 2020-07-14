@@ -9,38 +9,6 @@ session_start();
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script>
-	function favourite(uid, pid) {
-		$.ajax({
-		url: './favouritePokemon.php',
-		type: 'POST',
-		data: {favourite: true, uid: uid, pid: pid},
-		success: function(data) {
-			data = $.parseJSON(data);
-			if (data.success) {
-				document.getElementById("pkm-" + pid).className = "fa fa-heart";
-				document.getElementById("pkm-a-" + pid).setAttribute("onclick", "unfavourite(" + uid + "," + pid + ");");
-			}
-		}
-		});
-
-	}
-
-	function unfavourite(uid, pid) {
-		$.ajax({
-		url: './favouritePokemon.php',
-		type: 'POST',
-		data: {favourite: false, uid: uid, pid: pid},
-		success: function(data) {
-			data = $.parseJSON(data);
-			if (data.success) {
-				document.getElementById("pkm-" + pid).className = "fa fa-heart-o";
-				document.getElementById("pkm-a-" + pid).setAttribute("onclick", "favourite(" + uid + "," + pid + ");");
-			}
-		}
-		});
-	}
-</script>
 <style>
 .error {color: #FF0000;}
 </style>
@@ -55,12 +23,11 @@ require __DIR__ . '/env.php';
 use Google\Cloud\Storage\StorageClient;
 
 $app = array();
-$app['bucket_name'] = "cs348demo.appspot.com";
+$app['bucket_name'] = getenv('GOOGLE_STORAGE_BUCKET');
 $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
-$app['mysql_dbname'] = "pokemon";
-$app['project_id'] = getenv('GCLOUD_PROJECT');
-$app['connection_name'] = "/cloudsql/cs348demo-279318:us-central1:cs348demo-db";
+$app['mysql_dbname'] = getenv('MYSQL_DBNAME');
+$app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];

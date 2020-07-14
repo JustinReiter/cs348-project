@@ -2,20 +2,13 @@ runtime: php
 env: flex 
 runtime_config: 
     document_root: . 
-handlers:
-    - url: /img
-      static_dir: static/img
-    - url: /js
-      static_dir: static/js
-    - url: /css
-      static_dir: static/css
-    - url: .*
-      script: auto
 env_variables: 
-    APP_LOG: errorlog 
-    GOOGLE_STORAGE_BUCKET: "https://cs348demo-279318.uc.r.appspot.com/"
+    APP_LOG: errorlog
+    GOOGLE_STORAGE_BUCKET: "cs348demo-279318.appspot.com"
+    MYSQL_DBNAME: "pokemon"
+    MYSQL_CONNECTION_NAME: "/cloudsql/cs348demo-279318:us-central1:cs348demo-db"
     MYSQL_USER: "root"
     MYSQL_PASSWORD: "password" 
     MYSQL_DSN: "mysql:dbname=cs348demo-db;unix_socket=/cloudsql/cs348demo-279318:us-central1:cs348demo-db"
 beta_settings: 
-    cloud_sql_instances: "cs348demo:central1:cs348demo-db=tcp:3306"
+    cloud_sql_instances: "cs348demo-279318:us-central1:cs348demo-db"
