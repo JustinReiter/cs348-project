@@ -23,18 +23,23 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
+$app['debug'] = getenv('DEBUG');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
+$debug = $app['debug'];
 
-// Testing
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-
-// Deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+$conn = null;
+if ($debug) {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
+} else {
+  // Deployment
+  $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -70,7 +75,7 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 <?php
 
 //print Username and Join Date
-$dateQuery = "SELECT joined_at FROM players WHERE uid=".$_SESSION['uid'];
+$dateQuery = "SELECT joined_at FROM player WHERE uid=".$_SESSION['uid'];
 $dateResult = $conn->query($dateQuery);
 $join_date = $dateResult->fetch_row();
 

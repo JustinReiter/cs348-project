@@ -14,30 +14,8 @@ gcloud sql connect cs348-project-db-1 --user=root
 # Create database and table schema
 CREATE DATABASE pokemon;
 USE pokemon;
-CREATE TABLE pokedex (
-	attack INT,
-	base_egg_steps INT,
-	base_happiness INT,
-	base_total INT,
-	capture_rate INT,
-	classification VARCHAR(255),
-	defense INT,
-	experience_growth INT,
-	height_metres FLOAT,
-	hp INT,
-	name VARCHAR(255),
-	percentage_male FLOAT,
-	pokedex_number INT NOT NULL,
-	sp_attack INT,
-	sp_defense INT,
-	speed INT,
-	type1 VARCHAR(255),
-	type2 VARCHAR(255),
-	weight_kg FLOAT,
-	generation INT,
-	is_legendary BOOLEAN,
-	PRIMARY KEY(pokedex_number)
-);
+
+-- See CreateTableSQLQueries for scripts to init tables
 
 # Make bucket to store csv to load (choose unique bucket name)
 gsutil mb -c standard -l us-east4 gs://cs348_pokemon_project_bucket

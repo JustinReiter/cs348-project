@@ -28,21 +28,23 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
+$app['debug'] = getenv('DEBUG');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
+$debug = $app['debug'];
 
-
-// Create connection
-//for testing on localhost:8080
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-
-//for deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
-
+$conn = null;
+if ($debug) {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
+} else {
+  // Deployment
+  $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -92,7 +94,7 @@ if (isset($_GET["pkm"])) {
 
 
 	echo "<h5 class='card-title'>" . $result["name"] . "</h5>";
-	
+
 	echo "<p class='card-text'>Pokedex Number: " . $result["pid"] . "</p>";
 	echo "<p class='card-text'>Generation: " . $result["gen"] . "</p>";
 
@@ -103,7 +105,7 @@ if (isset($_GET["pkm"])) {
 	}
 
 	echo "</p><br>";
-	
+
 	echo "<p class='card-text'>Height: " . $result["height"] . " m</p>";
 	echo "<p class='card-text'>Weight: " . $result["weight"] . " kg</p>";
 	echo "<p class='card-text'>Percent male: " . $result["percent_male"] . "%</p>";
@@ -112,19 +114,19 @@ if (isset($_GET["pkm"])) {
 	echo "</div></div><div class='col-md-4'><div class='card-body'><br>";
 
 
-	echo "<p class='card-text'>Base HP: " . $result["hp"] . "</p>";
-	echo "<p class='card-text'>Base Attack: " . $result["attack"] . "</p>";
-	echo "<p class='card-text'>Base Defense: " . $result["defense"] . "</p>";
-	echo "<p class='card-text'>Base Sp. Atk: " . $result["sp_atk"] . "</p>";
-	echo "<p class='card-text'>Base Sp. Def: " . $result["sp_def"] . "</p>";
-	echo "<p class='card-text'>Base Speed: " . $result["speed"] . "</p><br>";
+	echo "<p class='card-text'>Base HP: " . $result["base_hp"] . "</p>";
+	echo "<p class='card-text'>Base Attack: " . $result["base_attack"] . "</p>";
+	echo "<p class='card-text'>Base Defense: " . $result["base_defense"] . "</p>";
+	echo "<p class='card-text'>Base Sp. Atk: " . $result["base_sp_atk"] . "</p>";
+	echo "<p class='card-text'>Base Sp. Def: " . $result["base_sp_def"] . "</p>";
+	echo "<p class='card-text'>Base Speed: " . $result["base_speed"] . "</p><br>";
 
 	echo "<p class='card-text'>Base Egg Steps: " . $result["base_egg_steps"] . " steps</p>";
 	echo "<p class='card-text'>Base Happiness: " . $result["base_happiness"] . "</p><br>";
 
 } else {
 	header("Location: ./pokemon.php");
-	exit();	
+	exit();
 }
 ?>
 

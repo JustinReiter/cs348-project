@@ -25,21 +25,23 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
+$app['debug'] = getenv('DEBUG');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
+$debug = $app['debug'];
 
-
-// Create connection
-//for testing on localhost:8080
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-
-//for deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
-
+$conn = null;
+if ($debug) {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
+} else {
+  // Deployment
+  $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -52,7 +54,7 @@ $name = $pin = "";
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  
+
   // Check if name is valid
   if (empty($_POST["name"])) {
 	  $nameErr = "Name must be specified";
@@ -62,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	    $nameErr = "Only numbers, letters, periods, apostraphes, and white space are allowed.";
     }
   }
-  
+
   // Check if pin is valid
   if (empty($_POST["pin"])) {
     $pinErr = "Pin cannot be empty";
@@ -116,7 +118,7 @@ function test_input($data) {
 
 <?php
 
-$query = "SELECT * FROM players WHERE name='$name'";
+$query = "SELECT * FROM player WHERE name='$name'";
 
 // Add pin check if loggin in
 if (isset($_POST["submit"])) {
@@ -141,9 +143,9 @@ if (empty($nameErr) && (!isset($_POST["submit"]) || empty($pinErr))) {
 	} elseif (isset($_POST["create"])) {
 		// Check if any player exists with name -- make new new player not
 		if (empty($result)) {
-			$uidquery = "SELECT max(uid)+1 FROM players";
+			$uidquery = "SELECT max(uid)+1 FROM player";
 			$uid = $conn -> query($uidquery) -> fetch_row();
-			$insert = "INSERT INTO players (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
+			$insert = "INSERT INTO player (uid, name, pin, joined_at) VALUES('$uid[0]', '$name', '$pin', now())";
 			if ($conn -> query($insert) === TRUE) {
                 		$_SESSION['name'] = $name;
 				$_SESSION['uid'] = $uid[0];

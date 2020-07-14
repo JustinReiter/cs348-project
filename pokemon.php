@@ -60,20 +60,23 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
+$app['debug'] = getenv('DEBUG');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
+$debug = $app['debug'];
 
-// Create connection
-//for testing on localhost:8080
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-
-//for deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
-
+$conn = null;
+if ($debug) {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
+} else {
+  // Deployment
+  $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -103,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $nameErr = "Only numbers, letters, periods, apostraphes, and white space are allowed.";
     }
   }
-  
+
   // Check if dexNum is valid
   if (empty($_POST["dexNum"])) {
     $dexNum = "";
@@ -113,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $dexNumErr = "Pokedex Number must be a number.";
     }
   }
-  
+
   // Check if type is valid
   if (empty($_POST["type"])) {
     $type = "";
@@ -216,7 +219,7 @@ if ($result = $conn -> query($finalQuery)) {
       echo "<td>" . $row[4] . "</td>";
       while ($favouriteArr && count($favouriteArr) > $pointer && $favouriteArr[$pointer][0] < $row[0]) {
 	      $pointer = $pointer + 1;
-      } 
+      }
       if ($favouriteArr && count($favouriteArr) > $pointer && $favouriteArr[$pointer][0] == $row[0] ) {
 	      echo "<td><a id='pkm-a-".$row[0]."' href='javascript:;' onclick='unfavourite(".$_SESSION['uid'].",".$row[0].")' ><span id='pkm-".$row[0]."' class='fa fa-heart'></span></a></td>";
 	      $pointer = $pointer + 1;

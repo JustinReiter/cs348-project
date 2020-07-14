@@ -11,21 +11,23 @@ $app['mysql_user'] =  $mysql_user;
 $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
+$app['debug'] = getenv('DEBUG');
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
 $dbname = $app['mysql_dbname'];
 $dbport = null;
 $dbsocket = $app['connection_name'];
+$debug = $app['debug'];
 
-
-// Create connection
-//for testing on localhost:8080
-$conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
-
-//for deployment
-//$conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
-
+$conn = null;
+if ($debug) {
+  // Testing
+  $conn = new mysqli("127.0.0.1", $username, $password, $dbname, 3306);
+} else {
+  // Deployment
+  $conn = new mysqli(null, $username, $password, $dbname, $dbport, $dbsocket);
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -38,7 +40,7 @@ if (isset($_POST['favourite']) && isset($_POST['uid']) && isset($_POST['pid']) &
 		echo json_encode(array("success"=>TRUE));
 	} else {
 		echo json_encode(array("success"=>FALSE,"error"=>"Failed to insert into database"));
-	}	
+	}
 } elseif (isset($_POST['favourite']) && isset($_POST['uid']) && isset($_POST['pid']) && $_POST['favourite'] == "false") {
 	$query = "DELETE FROM favourite_pokemon WHERE uid=".(int)$_POST['uid']." AND pid=".(int)$_POST['pid'].";";
 	if ($conn -> query($query) === TRUE) {

@@ -1,0 +1,15 @@
+runtime: php 
+env: flex 
+runtime_config: 
+    document_root: . 
+env_variables:
+    DEBUG: true
+    APP_LOG: errorlog
+    GOOGLE_STORAGE_BUCKET: "<BUCKET_NAME>"
+    MYSQL_DBNAME: "<DB_NAME>"
+    MYSQL_CONNECTION_NAME: "/cloudsql/<PROJECT_ID>:<LOCALE>:<SQL_INSTANCE_ID>"
+    MYSQL_USER: "<USERNAME>"
+    MYSQL_PASSWORD: "<PASSWORD>"
+    MYSQL_DSN: "mysql:dbname=<SQL_INSTANCE_ID>;unix_socket=/cloudsql/<PROJECT_ID>:<LOCALE>:<SQL_INSTANCE_ID>"
+beta_settings: 
+    cloud_sql_instances: "<PROJECT_ID>:<LOCALE>:<SQL_INSTANCE_ID>"
