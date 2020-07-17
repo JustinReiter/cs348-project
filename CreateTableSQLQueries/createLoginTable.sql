@@ -7,4 +7,4 @@ CREATE TABLE player
     joined_at DATETIME NOT NULL
 );
 -- Inserts a default account into the table
-INSERT INTO player (uid, name, pin, joined_at) VALUES (0, "admin", "0000", now());
+INSERT INTO player (uid, name, pin, joined_at) VALUES (NULL, "admin", "0000", now());

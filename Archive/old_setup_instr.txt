@@ -1,0 +1,77 @@
+cs348-project
+
+### TO-DO: UPDATE
+
+###########################################################################
+
+How to create and load sample database to GCP:
+
+# Commands from Google Cloud CLI connected to project 
+# (initialized as per "cs348_s20_project.pdf" with DB Instance cs348-project-db-1)
+
+# Connect to gcloud DB instance (sample command below)
+# Sample uses password = password
+gcloud sql connect cs348-project-db-1 --user=root
+
+# Create database and table schema
+CREATE DATABASE pokemon;
+USE pokemon;
+
+-- See CreateTableSQLQueries for scripts to init tables 
+-- (use AAA_full_clean.sql if needed followed by AAA_init.sql)
+
+# Make bucket to store csv to load (choose unique bucket name)
+gsutil mb -c standard -l us-east4 gs://cs348_pokemon_project_bucket
+
+# Clone project
+git clone https://github.com/JustinReiter/cs348-project.git
+
+# Upload csv to bucket (run from same directory as csv to upload)
+gsutil cp pokemon_clean.csv gs://cs348_pokemon_project_bucket
+
+# Get service account to give bucket permissions to
+# Execute
+gcloud sql instances describe cs348-project-db-1
+# Read the line with the serviceAccountEmailAddress (example given below)
+p957261420697-noghkh@gcp-sa-cloud-sql.iam.gserviceaccount.com
+
+# Give service account bucket write permission
+gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:W gs://cs348_pokemon_project_bucket
+
+# Give service account read permission for relevant csv in bucket
+gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:R gs://cs348_pokemon_project_bucket/pokemon_clean.csv
+
+
+### No longer import with csv.
+# instead create sql insert script with https://www.convertcsv.com/csv-to-sql.htm
+# Import csv to database
+# WARNING: IMPORT SEEMS TO NOT HANDLE NULL PROPERLY 
+# (E.G. BLANKS ARE PARSED AS 0 OR AN EMPTY VARCHAR RATHER THAN NULL)
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/type_matchup.csv --database=pokemon --table=type_matchup
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/pokemon_clean.csv --database=pokemon --table=pokemon
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_dummy.csv --database=pokemon --table=move
+
+gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_learn_dummy.csv --database=pokemon --table=learnable_move
+
+# Test Locally
+
+# Run in project directory
+composer install
+
+cd ~
+$ wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+$ chmod +x cloud_sql_proxy
+./cloud_sql_proxy -instances=cs348-project-279406:us-eastt4:cs348-project-db-1=tcp:3306
+
+# Run in project directory (use new terminal instance)
+php -S localhost:8080
+
+# Non-local
+Give service account Cloud SQL Client IAM Role
+service-PROJECT_NUMBER@gae-api-prod.google.com.iam.gserviceaccount.com
+Example:
+service-957261420697@gae-api-prod.google.com.iam.gserviceaccount.com
+https://cloud.google.com/sql/docs/mysql/connect-app-engine-flexible
+

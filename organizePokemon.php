@@ -24,6 +24,8 @@ $app['mysql_password'] = $mysql_password;
 $app['mysql_dbname'] = getenv('MYSQL_DBNAME');
 $app['connection_name'] = getenv('MYSQL_CONNECTION_NAME');
 $app['prod'] = getenv('PROD');
+$error_msg_pokemon_inst = "";
+$error_msg_party = "";
 
 $username = $app['mysql_user'];
 $password = $app['mysql_password'];
@@ -130,10 +132,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn -> query($set_order_b_query);
       }
     } else if ($_POST["action"] == "Remove") {
-      $iid_delete = $_POST["id_delete"];
+      $iid = $_POST["id"];
       // Decrement party_order of party members with higher number than entry to be removed
       // Then remove entry
-      $get_order_query = "SELECT party_order FROM party WHERE iid = " . $iid_delete . " AND uid = " . $_SESSION['uid'];
+      $get_order_query = "SELECT party_order FROM party WHERE iid = " . $iid . " AND uid = " . $_SESSION['uid'];
       $order = $conn -> query($get_order_query) -> fetch_row()[0];
 
       $bigger_order_query = "SELECT uid, iid, party_order FROM party WHERE party_order > " . $order . " AND uid = " . $_SESSION['uid'];
@@ -154,13 +156,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
       // Remove entry
       $removeFromPartyQuery = "DELETE FROM party
-        WHERE iid = " . $iid_delete . " AND uid = " . $_SESSION['uid'];
+        WHERE iid = " . $iid . " AND uid = " . $_SESSION['uid'];
       $conn -> query($removeFromPartyQuery);
     }
   }
   unset($_POST["action"]);
   unset($_POST["id"]);
-  unset($_POST["id_delete"]);
 }
 
 ?>
@@ -190,11 +191,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 echo "<div class=\"container\">";
 echo "<h2>".$_SESSION['name']. "'s Party:</h2>";
 echo "<h5><span style='color:red;'>".$error_msg_party."</span></h5>";
-
+echo "<form method='post' action='' id='swap_form'>
+  <input type='submit' name='action' value='Swap'/>
+</form><br>";
 echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
-echo "<form method='post' action=''>";
 echo "<thead>";
   echo "<tr>";
+    echo "<th>Order Number</th>";
     echo "<th>Pokedex Number</th>";
     echo "<th>Name</th>";
     echo "<th>Max HP</th>";
@@ -226,6 +229,7 @@ $party_query = "SELECT p.pid, p.name, i.max_hp, i.attack, i.defense, i.sp_atk, i
 if ($result = $conn -> query($party_query)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
+      echo "<td>" . intval(intval($row[14]) + 1) . "</td>";
       echo "<td>" . $row[0] . "</td>";
       echo "<td><a href='./viewPokemonPage.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
       echo "<td>" . $row[2] . "</td>";
@@ -239,19 +243,17 @@ if ($result = $conn -> query($party_query)) {
       echo "<td>" . $row[10] . "</td>";
       echo "<td>" . $row[11] . "</td>";
       echo "<td>
-        <input type='radio' name='id_swap_a' value='" . $row[12] . "'/>
+        <input form='swap_form' type='radio' name='id_swap_a' value='" . $row[12] . "'/>
       </td>";
       echo "<td>
-        <input type='radio' name='id_swap_b' value='" . $row[12] . "'/>
+        <input form='swap_form' type='radio' name='id_swap_b' value='" . $row[12] . "'/>
       </td>";
-      echo "<td><form method='post' action=''>
+      echo "<td><form method='post' action='' id='remove_form'>
         <input type='submit' name='action' value='Remove'/>
-        <input type='hidden' name='id_delete' value='" . $row[12] . "'/>
+        <input type='hidden' name='id' value='" . $row[12] . "'/>
       </form></td>";
     echo "</tr>";
   }
-  echo "<input type='submit' name='action' value='Swap'/>
-  </form>";
   $result -> free_result();
 }
 
@@ -302,11 +304,11 @@ if ($result = $conn -> query($ownership_query)) {
       echo "<td>" . $row[9] . "</td>";
       echo "<td>" . $row[10] . "</td>";
       echo "<td>" . $row[11] . "</td>";
-      echo "<td><form method='post' action=''>
+      echo "<td><form method='post' action='' id='add_form'>
         <input type='submit' name='action' value='Add'/>
         <input type='hidden' name='id' value='" . $row[12] . "'/>
       </form></td>";
-      echo "<td><form method='post' action=''>
+      echo "<td><form method='post' action='' id='release_form'>
         <input type='submit' name='action' value='Release' onclick=\"return confirm('Are you sure you want to say farewell to " . $row[13] . " forever?')\"/>
         <input type='hidden' name='id' value='" . $row[12] . "'/>
       </form></td>";

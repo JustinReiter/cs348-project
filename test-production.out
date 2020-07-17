@@ -24,37 +24,118 @@ mysql> SELECT * FROM pokemon WHERE pid=483;
 1 row in set (0.04 sec)
 
 
-mysql> SELECT * FROM players WHERE name="admin";
+mysql> SELECT * FROM player WHERE name="admin";
 +-----+-------+------+---------------------+
 | uid | name  | pin  | joined_at           |
 +-----+-------+------+---------------------+
-|   0 | admin | 0000 | 2020-07-11 15:31:44 |
+|   1 | admin | 0000 | 2020-07-17 20:48:23 |
 +-----+-------+------+---------------------+
-1 row in set (0.03 sec)
+1 row in set (0.02 sec)
 
-mysql> INSERT INTO players (uid, name, pin, joined_at) VALUES ("10", "New Player", "1111", now());
-Query OK, 1 row affected (0.04 sec)
+mysql> INSERT INTO player (uid, name, pin, joined_at) VALUES (NULL, "New Player", "1111", now());
+Query OK, 1 row affected (0.02 sec)
 
+mysql> SELECT * FROM favourite_pokemon WHERE uid=1;
+Empty set (0.01 sec)
 
-mysql> SELECT * FROM favourite_pokemon WHERE uid=0;
+mysql> INSERT INTO favourite_pokemon (uid, pid) VALUES (1, 483);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM favourite_pokemon WHERE uid=1;
 +-----+-----+
 | uid | pid |
 +-----+-----+
-|   0 |   1 |
-|   0 |   3 |
-|   0 |   4 |
-|   0 |   5 |
-|   0 |   7 |
-|   0 |  10 |
-|   0 |  14 |
-|   0 |  16 |
-|   0 | 484 |
+|   1 | 483 |
 +-----+-----+
-9 rows in set (0.04 sec)
+1 row in set (0.02 sec)
 
-mysql> INSERT INTO favourite_pokemon (uid, pid) VALUES (0, 483);
-Query OK, 1 row affected (0.04 sec)
+mysql> DELETE FROM favourite_pokemon WHERE uid=1 AND pid=483;
+Query OK, 1 row affected (0.01 sec)
 
-mysql> DELETE FROM favourite_pokemon WHERE uid=0 AND pid=483;
-Query OK, 1 row affected (0.04 sec)
+mysql> SELECT * FROM favourite_pokemon WHERE uid=1;
+Empty set (0.01 sec)
 
+mysql> SELECT COUNT(*) FROM learnable_move WHERE pid = 1;
++----------+
+| COUNT(*) |
++----------+
+|        2 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> SELECT move_name FROM learnable_move WHERE pid = 1 LIMIT 1 OFFSET 1;
++-------------+
+| move_name   |
++-------------+
+| poison_move |
++-------------+
+1 row in set (0.02 sec)
+
+mysql> INSERT INTO pokemon_inst
+    ->   (iid, cur_hp, max_hp, attack, defense, sp_atk, sp_def, speed, happiness, exp,
+    ->   nickname, gender, move_1, move_2, move_3, move_4, pid, uid)
+    ->   VALUES (null, 60, 60, 50, 55, 60, 60, 40, 200, 0, "Bulbasaur", "Male",
+    ->   "grass_move", "poison_move", "grass_move", null, 1, 1);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO party
+    ->   (uid, iid, party_order)
+    ->   VALUES (1, 1, 0);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT COUNT(*) FROM party WHERE uid = 1;
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> SELECT COUNT(*) FROM party WHERE iid = 1;
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.02 sec)
+
+mysql> SELECT party_order FROM party WHERE iid = 1 AND uid = 1;
++-------------+
+| party_order |
++-------------+
+|           0 |
++-------------+
+1 row in set (0.01 sec)
+
+
+mysql> SELECT p.pid, p.name, i.max_hp, i.attack, i.defense, i.sp_atk, i.sp_def, i.speed,
+    ->   i.move_1, i.move_2, i.move_3, i.move_4, i.party_iid, i.nickname, i.party_order
+    ->   FROM (
+    ->     SELECT max_hp, attack, defense, sp_atk, sp_def, speed, pid,
+    ->     move_1, move_2, move_3, move_4, party_order, party.iid AS party_iid, nickname
+    ->     FROM party INNER JOIN pokemon_inst ON party.iid = pokemon_inst.iid WHERE party.uid = 1
+    ->   ) AS i,
+    ->   pokemon AS p
+    ->   WHERE i.pid = p.pid ORDER BY i.party_order;
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----------+-----------+-------------+
+| pid | name      | max_hp | attack | defense | sp_atk | sp_def | speed | move_1     | move_2      | move_3     | move_4 | party_iid | nickname  | party_order |
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----------+-----------+-------------+
+|   1 | Bulbasaur |     60 |     50 |      55 |     60 |     60 |    40 | grass_move | poison_move | grass_move | NULL   |         1 | Bulbasaur |    0 |
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----------+-----------+-------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT p.pid, p.name, i.max_hp, i.attack, i.defense, i.sp_atk, i.sp_def, i.speed,
+    -> i.move_1, i.move_2, i.move_3, i.move_4, i.iid, i.nickname
+    ->   FROM pokemon_inst AS i, pokemon AS p WHERE i.pid = p.pid AND i.uid = 1 ORDER BY p.pid;
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----+-----------+
+| pid | name      | max_hp | attack | defense | sp_atk | sp_def | speed | move_1     | move_2      | move_3  | move_4 | iid | nickname  |
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----+-----------+
+|   1 | Bulbasaur |     60 |     50 |      55 |     60 |     60 |    40 | grass_move | poison_move | grass_move | NULL   |   1 | Bulbasaur |
++-----+-----------+--------+--------+---------+--------+--------+-------+------------+-------------+------------+--------+-----+-----------+
+1 row in set (0.01 sec)
+
+mysql> DELETE FROM party WHERE iid = 1 AND uid = 1;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> DELETE FROM pokemon_inst WHERE iid = 1;
+Query OK, 1 row affected (0.02 sec)

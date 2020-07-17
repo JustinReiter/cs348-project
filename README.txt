@@ -1,76 +1,63 @@
 cs348-project
 
-### TO-DO: UPDATE
-
 ###########################################################################
 
 How to create and load sample database to GCP:
 
-# Commands from Google Cloud CLI connected to project 
-# (initialized as per "cs348_s20_project.pdf" with DB Instance cs348-project-db-1)
+Commands from Google Cloud CLI connected to project
 
-# Connect to gcloud DB instance (sample command below)
-# Sample uses password = password
-gcloud sql connect cs348-project-db-1 --user=root
+Copy app.yaml and env.php from Config_Templates (provided in this code.zip)
+and fill in with relevant parameters
 
-# Create database and table schema
-CREATE DATABASE pokemon;
-USE pokemon;
+Connect to gcloud DB instance (sample command below)
+gcloud sql connect <DB_INSTANCE> --user=<USERNAME>
 
--- See CreateTableSQLQueries for scripts to init tables
+Create database and table schema
+Run SQL scripts in CreateTableSQLQueries (provided in this code.zip)
+The data sources for the SQL scripts are given in the 
+SQL files in CreateTableSQLQueries where applicable
 
-# Make bucket to store csv to load (choose unique bucket name)
-gsutil mb -c standard -l us-east4 gs://cs348_pokemon_project_bucket
-
-# Clone project
+Clone project master branch
 git clone https://github.com/JustinReiter/cs348-project.git
 
-# Upload csv to bucket (run from same directory as csv to upload)
-gsutil cp pokemon_clean.csv gs://cs348_pokemon_project_bucket
-
-# Get service account to give bucket permissions to
-# Execute
-gcloud sql instances describe cs348-project-db-1
-# Read the line with the serviceAccountEmailAddress (example given below)
-p957261420697-noghkh@gcp-sa-cloud-sql.iam.gserviceaccount.com
-
-# Give service account bucket write permission
-gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:W gs://cs348_pokemon_project_bucket
-
-# Give service account read permission for relevant csv in bucket
-gsutil acl ch -u p957261420697-o6xi5z@gcp-sa-cloud-sql.iam.gserviceaccount.com:R gs://cs348_pokemon_project_bucket/pokemon_clean.csv
-
-
-### No longer import with csv.
-# instead create sql insert script with https://www.convertcsv.com/csv-to-sql.htm
-# Import csv to database
-# WARNING: IMPORT SEEMS TO NOT HANDLE NULL PROPERLY 
-# (E.G. BLANKS ARE PARSED AS 0 OR AN EMPTY VARCHAR RATHER THAN NULL)
-gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/type_matchup.csv --database=pokemon --table=type_matchup
-
-gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/pokemon_clean.csv --database=pokemon --table=pokemon
-
-gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_dummy.csv --database=pokemon --table=move
-
-gcloud sql import csv cs348-project-db-1 gs://cs348_pokemon_project_bucket/move_learn_dummy.csv --database=pokemon --table=learnable_move
-
-# Test Locally
-
-# Run in project directory
+Run in project directory
 composer install
 
 cd ~
 $ wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
 $ chmod +x cloud_sql_proxy
-./cloud_sql_proxy -instances=cs348-project-279406:us-eastt4:cs348-project-db-1=tcp:3306
+./cloud_sql_proxy -instances=<PROJECT_ID>:<LOCALE>:<DN_INSTANCE>
 
-# Run in project directory (use new terminal instance)
+Run in project directory (use new terminal instance)
 php -S localhost:8080
 
-# Non-local
-Give service account Cloud SQL Client IAM Role
-service-PROJECT_NUMBER@gae-api-prod.google.com.iam.gserviceaccount.com
-Example:
-service-957261420697@gae-api-prod.google.com.iam.gserviceaccount.com
-https://cloud.google.com/sql/docs/mysql/connect-app-engine-flexible
+###########################################################################
 
+Implemented features:
+
+i)    Login/Create Account to Persist Player Data Across Multiple Sessions
+      Primarily implemented in index.php
+      
+ii)   Pokemon Search Page (Search by Type, Name, and Pokedex Number)
+      Implemented in pokemon.php
+
+iii)  Favourite/Unfavourite Pokemon feature for quick access
+      Implemented in pokemon.php and favouritePokemon.php
+
+iv)   A page to generate/add specific Pokemon instances to your team with randomized stats
+      Implemented in catchPokemon.php
+
+v)    The ability to populate and assign an order to your party (team) of Pokemon
+      Implemented in organizePokemon.php
+
+vi)   User information page with display of favourited Pokemon
+      Implemented in profile.php
+
+vii)  Detailed individual Pokemon stats with images
+      Implemented in viewPokemonPage.php
+
+###########################################################################
+
+Link to deployed version:
+
+https://cs348demo-279318.uc.r.appspot.com/
