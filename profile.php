@@ -76,7 +76,7 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 
 <?php
 
-//print Username and Join Date
+//print Username, UID Number, and Join Date
 $dateQuery = "SELECT joined_at FROM player WHERE uid=".$_SESSION['uid'];
 $dateResult = $conn->query($dateQuery);
 $join_date = $dateResult->fetch_row();
@@ -84,10 +84,67 @@ $join_date = $dateResult->fetch_row();
 echo "<div class=\"container\">";
 echo "<h2>".$_SESSION['name']. "'s Profile Information</h2>";
 echo "<br>Username: ". $_SESSION['name']. "<br>";
+echo "User ID Number: ". $_SESSION['uid']. "<br>";
 echo "Joined on: ". $join_date[0]. "<br><br>";
 echo "</div>";
 
 $dateResult -> free_result();
+
+//print Party Pokemon Table
+echo "<hr>";
+echo "<div class=\"container\">";
+
+echo "<h2>".$_SESSION['name']. "'s Party:</h2>";
+echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
+echo "<thead>";
+  echo "<tr>";
+    echo "<th>Order Number</th>";
+    echo "<th>Pokedex Number</th>";
+    echo "<th>Name</th>";
+    echo "<th>Max HP</th>";
+    echo "<th>Attack</th>";
+    echo "<th>Defense</th>";
+    echo "<th>Special Attack</th>";
+    echo "<th>Special Defense</th>";
+    echo "<th>Speed</th>";
+    echo "<th>Move 1</th>";
+    echo "<th>Move 2</th>";
+    echo "<th>Move 3</th>";
+    echo "<th>Move 4</th>";
+  echo "</tr>";
+echo "</thead>";
+
+$party_query = "SELECT p.pid, p.name, i.max_hp, i.attack, i.defense, i.sp_atk, i.sp_def, i.speed,
+  i.move_1, i.move_2, i.move_3, i.move_4, i.party_iid, i.nickname, i.party_order
+  FROM (
+    SELECT max_hp, attack, defense, sp_atk, sp_def, speed, pid,
+    move_1, move_2, move_3, move_4, party_order, party.iid AS party_iid, nickname
+    FROM party INNER JOIN pokemon_inst ON party.iid = pokemon_inst.iid WHERE party.uid = " . $_SESSION['uid'] . "
+  ) AS i,
+  pokemon AS p
+  WHERE i.pid = p.pid ORDER BY i.party_order";
+
+if ($result = $conn -> query($party_query)) {
+  while ($row = $result -> fetch_row()) {
+    echo "<tr>";
+      echo "<td>" . intval(intval($row[14]) + 1) . "</td>";
+      echo "<td>" . $row[0] . "</td>";
+      echo "<td><a href='./viewPokemonPage.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
+      echo "<td>" . $row[2] . "</td>";
+      echo "<td>" . $row[3] . "</td>";
+      echo "<td>" . $row[4] . "</td>";
+      echo "<td>" . $row[5] . "</td>";
+      echo "<td>" . $row[6] . "</td>";
+      echo "<td>" . $row[7] . "</td>";
+      echo "<td>" . $row[8] . "</td>";
+      echo "<td>" . $row[9] . "</td>";
+      echo "<td>" . $row[10] . "</td>";
+      echo "<td>" . $row[11] . "</td>";
+    echo "</tr>";
+  }
+}
+echo "</table>";
+echo "</div>";
 
 //print Favourite pokemon table
 echo "<hr>";
@@ -130,4 +187,3 @@ $conn -> close();
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
-
