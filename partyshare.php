@@ -57,7 +57,7 @@ if ($conn->connect_error) {
 
 // Initialization empty variables
 $nameErr = "";
-$uid = "";
+$userid = "";
 
 // Redirects user to login page if no login data found
 if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
@@ -68,11 +68,11 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Check if name is valid
-  if (empty($_POST["uid"])) {
-    $uid = "";
+  if (empty($_POST["username"])) {
+    $userid = "";
   } else {
-    $uid = test_input($_POST["uid"]);
-    if (!preg_match("/^[0-9a-zA-Z \.']*$/",$name)) {
+    $userid = test_input($_POST["username"]);
+    if (!preg_match("/^[0-9a-zA-Z \.']*$/",$userid)) {
       $nameErr = "Only numbers, letters, periods, apostraphes, and white space are allowed.";
     }
   }
@@ -109,12 +109,11 @@ function test_input($data) {
   <h2>Party Searcher</h2>
   <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <div class="form-group">
-      <label for="user-id">Search for Username:</label>
-      <input class="form-control" uid="user-id" value="<?php echo $name;?>">
+      <label for="username">Search by Username:</label>
+      <input class="form-control" id = "username"  userid="user-id" value="<?php echo $userid;?>">
     </div>
     <span class="error"><?php echo $nameErr;?></span>
-
-    <input class="btn btn-primary" uid="submit" value="Submit">
+    <input class="btn btn-primary" type="submit" name="submit" value="Submit">
   </form>
 </div>
 
@@ -123,29 +122,27 @@ echo "<hr>";
 echo "<div class=\"container\">";
 echo "<h2>Search Results:</h2>";
 
-$basequery = "SELECT uid, iid FROM party WHERE";
+$basequery = "SELECT name FROM player, party WHERE player.uid = party.uid";
 $uidCond = "TRUE";
 
-if(strcmp ($uid, "") !== 0 ) {
-	$uidCond = "name = \"" . $uid . "\"";
+if(strcmp ($userid, "") !== 0 ) {
+	$uidCond = " AND name = \"" . $userid . "\"";
 }
 
-$finalQuery = $basequery . " " . $uidCond;
+$finalQuery = $basequery . " " . $uidCond . " GROUP BY name";
 
 echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
 echo "<thead>";
   echo "<tr>";
-    echo "<th>User ID</th>";
-    echo "<th>Party Instance ID</th>";
+    echo "<th>Username</th>";
   echo "</tr>";
 echo "</thead>";
 
-$pointer = 0;
 if ($result = $conn -> query($finalQuery)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
-      echo "<td>" . $row[0] . "</td>";
-      echo "<td>" . $row[1] . "</td>";
+     echo "<td>" . $row[0] . "</td>";
+     echo "<td><a href='./viewparty.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
     echo "</tr>";
   }
   $result -> free_result();
