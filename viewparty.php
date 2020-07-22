@@ -56,8 +56,8 @@ if ($conn->connect_error) {
 // echo "\nConnected successfully\n";
 
 // Initialization empty variables
-$nameErr = "";
-$userid = "";
+$nameErr = $dexNumErr = $typeErr = "";
+$name = $dexNum = $type = "";
 
 // Redirects user to login page if no login data found
 if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
@@ -65,25 +65,6 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 	exit();
 }
 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Check if name is valid
-  if (empty($_POST["username"])) {
-    $userid = "";
-  } else {
-    $userid = test_input($_POST["username"]);
-    if (!preg_match("/^[0-9a-zA-Z \.']*$/",$userid)) {
-      $nameErr = "Only numbers, letters, periods, apostraphes, and white space are allowed.";
-    }
-  }
-}
-
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
 ?>
 
 <div id="navbar">
@@ -97,7 +78,6 @@ function test_input($data) {
 	<li class="nav-item"><a class="nav-link" href="catchPokemon.php"> Catch Pokemon </a></li>
 	<li class="nav-item"><a class="nav-link" href="organizePokemon.php"> Organize Pokemon </a></li>
 	<li class="nav-item"><a class="nav-link" href="partyshare.php"> Parties </a></li>
-
 	<li class="nav-item"><a class="nav-link" href="profile.php"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
 	<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
       </ul>
@@ -105,52 +85,69 @@ function test_input($data) {
   </nav>
 </div>
 
-<div class="container" style="padding-top: 2%">
-  <h2>Party Searcher</h2>
-  <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-    <div class="form-group">
-      <label for="username">Search by Username:</label>
-      <input class="form-control" id = "username"  userid="user-id" value="<?php echo $userid;?>">
-    </div>
-    <span class="error"><?php echo $nameErr;?></span>
-    <input class="btn btn-primary" type="submit" name="submit" value="Submit">
-  </form>
-</div>
-
 <?php
-echo "<hr>";
+
+$user = $_GET['user'];
+
+$query = "SELECT p.pid, p.name, i.max_hp, i.attack, i.defense, i.sp_atk, i.sp_def, i.speed,
+  i.move_1, i.move_2, i.move_3, i.move_4, i.party_iid, i.nickname, i.party_order
+  FROM (
+    SELECT max_hp, attack, defense, sp_atk, sp_def, speed, pid,
+    move_1, move_2, move_3, move_4, party_order, party.iid AS party_iid, nickname
+    FROM party INNER JOIN pokemon_inst ON party.iid = pokemon_inst.iid WHERE party.uid = ". $user . "
+  ) AS i,
+  pokemon AS p
+  WHERE i.pid = p.pid ORDER BY i.party_order;";
+
+$idquery = "SELECT name FROM player WHERE uid =" .$user .";";
+$res = $conn -> query($idquery);
+$idrow = $res-> fetch_row();
+
 echo "<div class=\"container\">";
-echo "<h2>Search Results:</h2>";
-
-$basequery = "SELECT name, player.uid FROM player, party WHERE player.uid = party.uid";
-$uidCond = "";
-
-if(strcmp ($userid, "") !== 0 ) {
-	$uidCond = " AND name = \"" . $userid . "\"";
-}
-
-$finalQuery = $basequery . $uidCond . " GROUP BY name, player.uid;";
-
+echo "<h2>". $idrow[0]. "'s Party:</h2>";
+echo "<h5><span style='color:red;'>".$error_msg_party."</span></h5>";
 echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
 echo "<thead>";
- echo "<tr>";
-  echo "<th>Username</th>";
-  echo "<th>ID</th>";
+  echo "<tr>";
+    echo "<th>Order Number</th>";
+    echo "<th>Pokedex Number</th>";
+    echo "<th>Name</th>";
+    echo "<th>Max HP</th>";
+    echo "<th>Attack</th>";
+    echo "<th>Defense</th>";
+    echo "<th>Special Attack</th>";
+    echo "<th>Special Defense</th>";
+    echo "<th>Speed</th>";
+    echo "<th>Move 1</th>";
+    echo "<th>Move 2</th>";
+    echo "<th>Move 3</th>";
+    echo "<th>Move 4</th>";
   echo "</tr>";
 echo "</thead>";
 
-if ($result = $conn -> query($finalQuery)) {
+if ($result = $conn -> query($query)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
-     echo "<td>" . $row[0]. "</td>";
-     echo "<td><a href='./viewparty.php?user=" . $row[1] . "'>" . $row[1] .  "</a></td>";
+      echo "<td>" . intval(intval($row[14]) + 1) . "</td>";
+      echo "<td>" . $row[0] . "</td>";
+      echo "<td><a href='./viewPokemonPage.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
+      echo "<td>" . $row[2] . "</td>";
+      echo "<td>" . $row[3] . "</td>";
+      echo "<td>" . $row[4] . "</td>";
+      echo "<td>" . $row[5] . "</td>";
+      echo "<td>" . $row[6] . "</td>";
+      echo "<td>" . $row[7] . "</td>";
+      echo "<td>" . $row[8] . "</td>";
+      echo "<td>" . $row[9] . "</td>";
+      echo "<td>" . $row[10] . "</td>";
+      echo "<td>" . $row[11] . "</td>";
     echo "</tr>";
   }
   $result -> free_result();
 }
+
 echo "</table>";
 echo "</div>";
-
 ?>
 
 <?php
@@ -161,4 +158,5 @@ $conn -> close();
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
+
 
