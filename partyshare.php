@@ -119,10 +119,11 @@ function test_input($data) {
 </div>
 
 
+
 <?php
 echo "<hr>";
 echo "<div class=\"container\">";
-echo "<h2>Search Results:</h2>";
+echo "<h2>Player Party Cards: </h2>";
 
 
 $basequery = "SELECT name, player.uid FROM player, party WHERE player.uid = party.uid";
@@ -134,26 +135,27 @@ if(strcmp ($userid, "") !== 0 ) {
 
 $finalQuery = $basequery . " AND " . $uidCond . " GROUP BY name, player.uid";
 
+echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
+    echo "<div class=\"row\">";
+        if ($result = $conn -> query($finalQuery)) {
+        while ($row = $result -> fetch_row()) {
+            echo "<div class=\"col-sm-3\">";
+                echo "<div class=\"card\">";
+                    echo "<img class=\"card-img-top\" src=\"...\" alt=\"Card image cap\">";
+                    echo "<div class=\"card-body\">";
+                        echo "<h5 class=\"card-title\">" . $row[0] . "</h5>";
+                        echo "<p class=\"card-text\">User ID# " . $row[1]. "</p>";
+                        echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-primary\">View Party</a>";
+                    echo "</div>";
+                echo "</div>";
 
-echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
-echo "<thead>";
- echo "<tr>";
-  echo "<th>Username</th>";
-  echo "<th>ID</th>";
-  echo "</tr>";
-echo "</thead>";
-
-if ($result = $conn -> query($finalQuery)) {
-  while ($row = $result -> fetch_row()) {
-    echo "<tr>";
-     echo "<td>" . $row[0]. "</td>";
-     echo "<td><a href='./viewparty.php?user=" . $row[1] . "'>" . $row[1] .  "</a></td>";
-    echo "</tr>";
-  }
-  $result -> free_result();
-}
-echo "</table>";
+            echo "</div>";
+        }
+        $result -> free_result();
+        }
+    echo "</div>";
 echo "</div>";
+
 
 ?>
 
