@@ -59,6 +59,7 @@ if ($conn->connect_error) {
 $nameErr = "";
 $userid = "";
 
+
 // Redirects user to login page if no login data found
 if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 	header("Location: ./index.php");
@@ -67,11 +68,11 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Check if name is valid
-  if (empty($_POST["username"])) {
+  // Check if username is valid
+  if (empty($_POST["userid"])) {
     $userid = "";
   } else {
-    $userid = test_input($_POST["username"]);
+    $userid = test_input($_POST["userid"]);
     if (!preg_match("/^[0-9a-zA-Z \.']*$/",$userid)) {
       $nameErr = "Only numbers, letters, periods, apostraphes, and white space are allowed.";
     }
@@ -109,27 +110,30 @@ function test_input($data) {
   <h2>Party Searcher</h2>
   <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <div class="form-group">
-      <label for="username">Search by Username:</label>
-      <input class="form-control" id = "username"  userid="user-id" value="<?php echo $userid;?>">
+      <label for="pkn-name">Search by Username:</label>
+      <input class="form-control" id = "pkn-name" type="text" name="userid" value="<?php echo $userid;?>">
     </div>
     <span class="error"><?php echo $nameErr;?></span>
     <input class="btn btn-primary" type="submit" name="submit" value="Submit">
   </form>
 </div>
 
+
 <?php
 echo "<hr>";
 echo "<div class=\"container\">";
 echo "<h2>Search Results:</h2>";
 
+
 $basequery = "SELECT name, player.uid FROM player, party WHERE player.uid = party.uid";
-$uidCond = "";
+$uidCond = "TRUE";
 
 if(strcmp ($userid, "") !== 0 ) {
-	$uidCond = " AND name = \"" . $userid . "\"";
+	$uidCond = "name = \"" . $userid . "\"";
 }
 
-$finalQuery = $basequery . $uidCond . " GROUP BY name, player.uid;";
+$finalQuery = $basequery . " AND " . $uidCond . " GROUP BY name, player.uid";
+
 
 echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
 echo "<thead>";
