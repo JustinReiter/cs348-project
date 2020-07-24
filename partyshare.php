@@ -123,7 +123,7 @@ function test_input($data) {
 <?php
 echo "<hr>";
 echo "<div class=\"container\">";
-echo "<h2>Player Party Cards: </h2>";
+echo "<h2>Player Parties: </h2>";
 
 
 $basequery = "SELECT name, player.uid FROM player, party WHERE player.uid = party.uid";
@@ -135,13 +135,18 @@ if(strcmp ($userid, "") !== 0 ) {
 
 $finalQuery = $basequery . " AND " . $uidCond . " GROUP BY name, player.uid";
 
+
+
 echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
     echo "<div class=\"row\">";
         if ($result = $conn -> query($finalQuery)) {
         while ($row = $result -> fetch_row()) {
+            $imageQuery = "SELECT pid FROM party, pokemon_inst WHERE party.party_order = 1 AND party.uid = pokemon_inst.uid AND party.iid = pokemon_inst.iid AND party.uid = " . $row[1];
+            $imgresult = $conn -> query($imageQuery);
+            $img = $imgresult ->fetch_row();
             echo "<div class=\"col-sm-3\">";
                 echo "<div class=\"card\">";
-                    echo "<img class=\"card-img-top\" src=\"...\" alt=\"Card image cap\">";
+                    echo "<img class=\"card-img-top\" src=\"img/" . $img[0] . ".png\" alt=\"Card image cap\">";
                     echo "<div class=\"card-body\">";
                         echo "<h5 class=\"card-title\">" . $row[0] . "</h5>";
                         echo "<p class=\"card-text\">User ID# " . $row[1]. "</p>";
