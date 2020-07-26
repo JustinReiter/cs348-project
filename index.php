@@ -112,7 +112,7 @@ function test_input($data) {
     	<span class="error"><?php echo $pinErr;?></span>
     </div>
     <button class="btn btn-primary" type="submit" name="submit" value="Submit">Login</button>
-    <button class="btn btn-primary" type="submit" name="create" value"Create">Create New Account</button>
+    <button class="btn btn-primary" type="submit" name="create" value="Create">Create New Account</button>
   </form>
 </div>
 

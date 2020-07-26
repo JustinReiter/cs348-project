@@ -42,10 +42,38 @@ if (isset($_POST['val'])) {
 	}
 	echo json_encode(array("success"=>TRUE, "val"=>$newVal, "res"=>$newRes));
 } else if (isset($_POST['startDuel']) && isset($_POST['uid'])) {
-	$partyQuery1 = "SELECT * FROM party, pokemon_inst WHERE party.uid=" . $_POST['uid'] . " AND party.iid=pokemon_inst.iid ORDER BY party.party_order";
-	$result = $conn -> query($partyQuery1) -> fetch_all(MYSQLI_ASSOC);
-	echo json_encode(array("success"=>TRUE,"party"=>$result));
+	$partyQuery1 = 'SELECT * FROM party, pokemon_inst WHERE party.uid=' . $_POST['uid'] . ' AND party.iid=pokemon_inst.iid ORDER BY party.party_order';
+	$playerParty = $conn -> query($partyQuery1) -> fetch_all(MYSQLI_ASSOC);
 	
+	if (count($playerParty) == 0) {
+		echo json_encode(array("success"=>FALSE,"error"=>"Player has no party"));
+	} else {
+	
+		$playerFirstPokemon = $partyAlive1 = $playerParty[0]['iid'];
+		for ($row = 1; $row < count($playerParty); $row++) {
+			$partyAlive1 = $partyAlive1 . $playerParty[$row]['iid'];
+		}
+
+
+
+		$partyQuery2 = 'SELECT * FROM party, pokemon_inst WHERE party.uid="3" AND party.iid=pokemon_inst.iid ORDER BY party.party_order';
+		$botParty = $conn -> query($partyQuery2) -> fetch_all(MYSQLI_ASSOC);
+		
+		if (count($botParty) == 0) {
+			echo json_encode(array("success"=>FALSE,"error"=>"Bot has no party"));
+		} else {
+			$botFirstPokemon = $partyAlive2 = $botParty[0]['iid'];
+			for ($row = 1; $row < count($botParty); $row++) {
+				$partyAlive2 = $partyAlive2 . $botParty[$row]['iid'];
+			}
+
+			$battleStartInsert = "INSERT INTO battle (gid, uid1, uid2, started_at, pokemon1, pokemon2, party_alive1, party_alive2, is_finished) VALUES (null, " . $_POST['uid'] . ", 3, now(), " . 
+									$playerFirstPokemon . ", " . $botFirstPokemon . ", " . $partyAlive1 . ", " . $partyAlive2 . ", 0);";
+
+			$conn -> query($battleStartInsert);
+			echo json_encode(array("success"=>TRUE, "playerPkmIndex"=>0, "enemyPkmIndex"=>0, "player"=>$playerParty, "enemy"=>$botParty));
+		}
+	}
 } else {
 	echo json_encode(array("success"=>FALSE,"error"=>"Bad request"));
 }
