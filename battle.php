@@ -7,28 +7,75 @@ session_start();
 <title>Pokemon Searcher</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
-	var val = 0;
-	function battleUpdate() {
+
+	var initialRequest = true;
+	
+	/**
+	* Pings server every 5 seconds to get updates... Used when waiting for opponent / updating game initially
+	* @param {int} player uid (should be in session storage)
+	*/
+	function battleUpdate(uid) {
 		$.ajax({
 		url: './battleServer.php',
 		type: 'POST',
-		data: {val: val},
+		data: {uid: uid, getUpdate: true},
 		success: function(data) {
 			data = $.parseJSON(data);
 			if (data.success) {
-				document.getElementById("res").innerText = "Response " + data.val + " - " + data.res;
-				val++;
-				if (!data.res) {
-					setTimeout(battleUpdate, 5000);
+				if (!data.gameInProgress) {
+					// If no game is in progress, hide battle pane and show start button
+					document.getElementById("start-button").style.display = '';
+					document.getElementById("battle-div").style.display = 'none';
+				} else if (data.playerTurn) {
+					// If game is in progress, hide start button and show battle pane
+					document.getElementById("start-button").style.display = 'none';
+					document.getElementById("battle-div").style.display = '';
+						
+					// Only do this once to get pokemon details
+					if (initialRequest) {
+						startDuel(uid);
+						initialRequest = false;
+					}
+
+					// Enable moves so player can pick next turn
+					disableMoveButtons(false);
+				} else {
+					// Only do this once to get pokemon details
+					if (initialRequest) {
+						startDuel(uid);
+						initialRequest = false;
+					}
+
+					// Disable buttons so player cannot move on opponents turn
+					disableMoveButtons(true);
 				}
+
+				document.getElementById("res").innerText = data.res;
+				document.getElementById("msg").innerText = data.msg;
+
+				// Ping server after 5 seconds (acts asynchronously)
+				setTimeout(battleUpdate, 5000, uid);
+			} else {
+				// There was an error... Display error on page
+				document.getElementById("res").innerText = "Response: " + data.error;
+				document.getElementById("msg").innerText = "Please refresh the page to restart the battle";
+				disableMoveButtons(true);
+				document.getElementById("start-button").style.display = 'none';
+				document.getElementById("battle-div").style.display = 'none';
 			}
 		}
 		});
 	}
 
+
+	/**
+	* Starts duel and grabs pokemon information to display on screen
+	* @param {int} player uid (should be in session storage)
+	*/
 	function startDuel(uid) {
 		$.ajax({
 		url: './battleServer.php',
@@ -37,55 +84,69 @@ session_start();
 		success: function(data) {
 			data = $.parseJSON(data);
 			if (data.success) {
+				// Update pokemon and battle information
 				document.getElementById("res").innerText = "Starting game";
 				document.getElementById("start-button").style.display = 'none';
 				
+				// Images... Do this first as we need to get img from backend
 				document.getElementById("opponent-img").src = "img/" + data.enemy[data.enemyPkmIndex].pid + ".png";
 				document.getElementById("player-img").src = "img/" + data.player[data.playerPkmIndex].pid + ".png";
-
+					
+				// Update pokemon name/hp
 				document.getElementById("enemy-pkm-name").innerText = data.enemy[data.enemyPkmIndex].nickname;
 				document.getElementById("enemy-pkm-hp").innerText = data.enemy[data.enemyPkmIndex].cur_hp + " / " + data.enemy[data.enemyPkmIndex].max_hp + " HP";
 				document.getElementById("player-pkm-name").innerText = data.player[data.playerPkmIndex].nickname;
 				document.getElementById("player-pkm-hp").innerText = data.player[data.playerPkmIndex].cur_hp + " / " + data.player[data.playerPkmIndex].max_hp + " HP";
-
+					
+				// Populate pokemon moves
 				document.getElementById("move-1").innerText = data.player[data.playerPkmIndex].move_1;
 				document.getElementById("move-2").innerText = data.player[data.playerPkmIndex].move_2;
 				document.getElementById("move-3").innerText = data.player[data.playerPkmIndex].move_3;
 				document.getElementById("move-4").innerText = data.player[data.playerPkmIndex].move_4;
 
+				// Lastly, show battle pane
 				document.getElementById("battle-div").style.display = '';
 			}
 		}
 		});
 	}
 
+	/**
+	* Plays a move when it is the player's turn
+	* @param {int} player uid (should be in session storage)
+	* @param {string} string of move number being used (ex 'move_1')... Not actual move name
+	*/
 	function useMove(uid, move_name) {
 		$.ajax({
 		url: './battleServer.php',
 		type: 'POST',
-		data: {uid: uid, startDuel: true},
+		data: {uid: uid, useMove: true, move_name: move_name},
 		success: function(data) {
 			data = $.parseJSON(data);
 			if (data.success) {
-				document.getElementById("res").innerText = "Starting game";
-				document.getElementById("start-button").style.display = 'none';
+				// Disable player move buttons and update game info
+				disableMoveButtons(true);
 
-				document.getElementById("battle-div").style.display = '';
-				document.getElementById("opponent-img").src = "img/" + data.enemy[data.enemyPkmIndex].iid + ".png";
-
-				document.getElementById("player-img").src = "img/" + data.player[data.playerPkmIndex].iid + ".png";
-			} else {
-				console.log("ERROR");
+				document.getElementById("res").innerText = "Opponent's Turn";
+				document.getElementById("enemy-pkm-hp").innerText = data.enemyHP;
 			}
 		}
 		});
 	}
+
+	function disableMoveButtons(shouldDisable) {
+		document.getElementById("move-1").disabled = shouldDisable;
+		document.getElementById("move-2").disabled = shouldDisable;
+		document.getElementById("move-3").disabled = shouldDisable;
+		document.getElementById("move-4").disabled = shouldDisable;
+	}
+
 </script>
 <style>
 .error {color: #FF0000;}
 </style>
 </head>
-<body onload="battleUpdate()">
+<body onload="battleUpdate(<?php echo $_SESSION['uid']?>)">
 
 <?php
 
@@ -148,10 +209,10 @@ function test_input($data) {
         <a class="navbar-brand" href="pokemon.php">CS348 Project</a>
       </div>
       <ul class="nav navbar-nav navbar-right">
-        <li class="nav-item"><a class="nav-link" href="pokemon.php"> Search Pokemon </a></li>
-		<li class="nav-item"><a class="nav-link" href="catchPokemon.php"> Catch Pokemon </a></li>
-		<li class="nav-item"><a class="nav-link" href="organizePokemon.php"> Organize Pokemon </a></li>
-		<li class="nav-item"><a class="nav-link" href="battle.php"> Battle </a></li>
+        <li class="nav-item"><a class="nav-link" href="pokemon.php"><span class="fa fa-search"> Search Pokemon </a></li>
+		<li class="nav-item"><a class="nav-link" href="catchPokemon.php"><span class="icon-pokeball"> Catch Pokemon </a></li>
+		<li class="nav-item"><a class="nav-link" href="organizePokemon.php"><span class="fa fa-sitemap"> Organize Pokemon </a></li>
+		<li class="nav-item"><a class="nav-link" href="battle.php"><span class="fa fa-trophy"> Battle </a></li>
 		<li class="nav-item"><a class="nav-link" href="profile.php"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
 		<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
       </ul>
@@ -161,6 +222,7 @@ function test_input($data) {
 
 <div class="container" padding-top="4%">
   <h5 id="res">Waiting for response</h5>
+  <p id="msg"></p>
   <button id="start-button" class="btn btn-primary" onclick="startDuel(<?php echo $_SESSION['uid']?>)">Start Duel</button>
 </div>
 <div id="battle-div" class="container" style="display: none;">
@@ -207,9 +269,6 @@ function test_input($data) {
 
 
 <?php
-$query = "SELECT";
-
-
 
 $conn -> close();
 ?>
