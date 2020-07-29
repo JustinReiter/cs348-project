@@ -103,13 +103,14 @@ $idquery = "SELECT name FROM player WHERE uid =" .$user .";";
 $res = $conn -> query($idquery);
 $idrow = $res-> fetch_row();
 
-echo "<div class=\"container\">";
+echo "<div class=\"table-responsive\" max-width: 16rem >";
 echo "<h2>". $idrow[0]. "'s Party:</h2>";
+echo "<h2></h2>";
 echo "<h5><span style='color:red;'>".$error_msg_party."</span></h5>";
-echo "<table class=\"table table-striped table-hover\" style=\"width:100%\">";
-echo "<thead>";
+echo "<table class=\"table table-image table-bordered\">";
+echo "<thead class=\"thead-dark\">";
   echo "<tr>";
-    echo "<th>Order Number</th>";
+    echo "<th>Image</th>";
     echo "<th>Pokedex Number</th>";
     echo "<th>Name</th>";
     echo "<th>Max HP</th>";
@@ -128,7 +129,8 @@ echo "</thead>";
 if ($result = $conn -> query($query)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
-      echo "<td>" . intval(intval($row[14]) + 1) . "</td>";
+      echo "<td class=\"w-5\">";
+        echo "<img src=\"img/" . $row[0] . ".png\" class=\"img-fluid\" alt=\"Hmmm, I wonder where the image is?\">";
       echo "<td>" . $row[0] . "</td>";
       echo "<td><a href='./viewPokemonPage.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
       echo "<td>" . $row[2] . "</td>";
