@@ -85,6 +85,8 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
   </nav>
 </div>
 
+<div class="container" style="padding-top: 2%">
+
 <?php
 
 $user = $_GET['user'];
@@ -103,34 +105,34 @@ $idquery = "SELECT name FROM player WHERE uid =" .$user .";";
 $res = $conn -> query($idquery);
 $idrow = $res-> fetch_row();
 
-echo "<div class=\"table-responsive\" max-width: 16rem >";
+echo "<div class=\"container\">";
 echo "<h2>". $idrow[0]. "'s Party:</h2>";
-echo "<h2></h2>";
-echo "<h5><span style='color:red;'>".$error_msg_party."</span></h5>";
-echo "<table class=\"table table-image table-bordered\">";
+  echo "<div class=\"row\">";
+    echo "<div class=\"col-12\">";
+echo "<table class=\"table table-image table-responsive table-bordered\">"; //table-responsive table-bordered
 echo "<thead class=\"thead-dark\">";
   echo "<tr>";
-    echo "<th>Image</th>";
-    echo "<th>Pokedex Number</th>";
-    echo "<th>Name</th>";
-    echo "<th>Max HP</th>";
-    echo "<th>Attack</th>";
-    echo "<th>Defense</th>";
-    echo "<th>Special Attack</th>";
-    echo "<th>Special Defense</th>";
-    echo "<th>Speed</th>";
-    echo "<th>Move 1</th>";
-    echo "<th>Move 2</th>";
-    echo "<th>Move 3</th>";
-    echo "<th>Move 4</th>";
+    echo "<th scope=\"col\" >Image</th>";
+    echo "<th scope=\"col\">Pokedex Number</th>";
+    echo "<th scope=\"col\">Name</th>";
+    echo "<th scope=\"col\">Max HP</th>";
+    echo "<th scope=\"col\">Attack</th>";
+    echo "<th scope=\"col\">Defense</th>";
+    echo "<th scope=\"col\">Special Attack</th>";
+    echo "<th scope=\"col\">Special Defense</th>";
+    echo "<th scope=\"col\">Speed</th>";
+    echo "<th scope=\"col\">Move 1</th>";
+    echo "<th scope=\"col\">Move 2</th>";
+    echo "<th scope=\"col\">Move 3</th>";
+    echo "<th scope=\"col\">Move 4</th>";
   echo "</tr>";
 echo "</thead>";
 
 if ($result = $conn -> query($query)) {
   while ($row = $result -> fetch_row()) {
     echo "<tr>";
-      echo "<td class=\"w-5\">";
-        echo "<img src=\"img/" . $row[0] . ".png\" class=\"img-fluid\" alt=\"Hmmm, I wonder where the image is?\">";
+      echo "<td class=\"w-25\">";
+        echo "<img src=\"img/" . $row[0] . ".png\" class=\"img-fluid\" alt=\"Hmmm, I wonder where the image is?\"></td>";
       echo "<td>" . $row[0] . "</td>";
       echo "<td><a href='./viewPokemonPage.php?pkm=" . $row[0] . "'>" . $row[1] .  "</a></td>";
       echo "<td>" . $row[2] . "</td>";

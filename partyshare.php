@@ -139,12 +139,13 @@ echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
     echo "<div class=\"row\">";
         if ($result = $conn -> query($finalQuery)) {
         while ($row = $result -> fetch_row()) {
+            if($row[1] == $_SESSION['uid'] || $row[0] == $_SESSION['name'] ) continue;
             $imageQuery = "SELECT pid FROM party, pokemon_inst WHERE party.uid = pokemon_inst.uid AND party.iid = pokemon_inst.iid AND party.uid = " . $row[1];
             $imgresult = $conn -> query($imageQuery);
             $img = $imgresult ->fetch_row();
             echo "<div class=\"col-sm-3 d-flex align-items-stretch\">";
-                echo "<div class=\"card border-secondary mb-3\">";
-                    echo "<img class=\"card-img-top\" src=\"img/" . $img[0] . ".png\" alt=\"Card image cap\">";
+                echo "<div class=\"card text-white bg-secondary mb-3\">";
+                    echo "<img class=\"card-img-top img-thumbnail\" src=\"img/" . $img[0] . ".png\" width = \"10\" alt=\"No idea where the image went\">";
                     echo "<div class=\"card-body\">";
                         echo "<h3 class=\"card-title\">" . $row[0] . "</h3>";
                         echo "<h5 class=\"card-text\">User ID# " . $row[1]. "</h5>";
@@ -153,16 +154,16 @@ echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
                         $pokeresult = $conn -> query($pokequery);
                         $poke = $pokeresult -> fetch_row();
                         //echo "<p class=\"card-text\"> | " . $poke[0] . " | ";
-                        echo "<span class=\"badge badge-secondary\">". $poke[0] . "</span>";
+                        echo "<span class=\"badge badge-dark\">". $poke[0] . "</span>";
                         while($img = $imgresult ->fetch_row()){
                             $pokequery = "SELECT name FROM pokemon WHERE pid =" . $img[0];
                             $pokeresult = $conn -> query($pokequery);
                             $poke = $pokeresult -> fetch_row();
                             //echo $poke[0] . " | ";
-                            echo "<span class=\"badge badge-secondary\">". $poke[0] . "</span>";
+                            echo "<span class=\"badge badge-dark\">". $poke[0] . "</span>";
                         }
                         echo "</p>";
-                        echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-outline-info\">View Party</a>";
+                        echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-info\">View Party</a>";
                     echo "</div>";
                 echo "</div>";
 
