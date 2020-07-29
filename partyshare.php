@@ -114,7 +114,7 @@ function test_input($data) {
       <input class="form-control" id = "pkn-name" type="text" name="userid" value="<?php echo $userid;?>">
     </div>
     <span class="error"><?php echo $nameErr;?></span>
-    <input class="btn btn-primary" type="submit" name="submit" value="Submit">
+    <input class="btn btn-info" type="submit" name="submit" value="Submit">
   </form>
 </div>
 
@@ -135,22 +135,34 @@ if(strcmp ($userid, "") !== 0 ) {
 
 $finalQuery = $basequery . " AND " . $uidCond . " GROUP BY name, player.uid";
 
-
-
 echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
     echo "<div class=\"row\">";
         if ($result = $conn -> query($finalQuery)) {
         while ($row = $result -> fetch_row()) {
-            $imageQuery = "SELECT pid FROM party, pokemon_inst WHERE party.party_order = 1 AND party.uid = pokemon_inst.uid AND party.iid = pokemon_inst.iid AND party.uid = " . $row[1];
+            $imageQuery = "SELECT pid FROM party, pokemon_inst WHERE party.uid = pokemon_inst.uid AND party.iid = pokemon_inst.iid AND party.uid = " . $row[1];
             $imgresult = $conn -> query($imageQuery);
             $img = $imgresult ->fetch_row();
-            echo "<div class=\"col-sm-3\">";
-                echo "<div class=\"card\">";
+            echo "<div class=\"col-sm-3 d-flex align-items-stretch\">";
+                echo "<div class=\"card border-secondary mb-3\">";
                     echo "<img class=\"card-img-top\" src=\"img/" . $img[0] . ".png\" alt=\"Card image cap\">";
                     echo "<div class=\"card-body\">";
-                        echo "<h5 class=\"card-title\">" . $row[0] . "</h5>";
-                        echo "<p class=\"card-text\">User ID# " . $row[1]. "</p>";
-                        echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-primary\">View Party</a>";
+                        echo "<h3 class=\"card-title\">" . $row[0] . "</h3>";
+                        echo "<h5 class=\"card-text\">User ID# " . $row[1]. "</h5>";
+                        echo "<h6 class=\"card-text\">Pokemon in party: </h6>";
+                        $pokequery = "SELECT name FROM pokemon WHERE pid =" . $img[0];
+                        $pokeresult = $conn -> query($pokequery);
+                        $poke = $pokeresult -> fetch_row();
+                        //echo "<p class=\"card-text\"> | " . $poke[0] . " | ";
+                        echo "<span class=\"badge badge-secondary\">". $poke[0] . "</span>";
+                        while($img = $imgresult ->fetch_row()){
+                            $pokequery = "SELECT name FROM pokemon WHERE pid =" . $img[0];
+                            $pokeresult = $conn -> query($pokequery);
+                            $poke = $pokeresult -> fetch_row();
+                            //echo $poke[0] . " | ";
+                            echo "<span class=\"badge badge-secondary\">". $poke[0] . "</span>";
+                        }
+                        echo "</p>";
+                        echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-outline-info\">View Party</a>";
                     echo "</div>";
                 echo "</div>";
 
