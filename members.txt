@@ -1,0 +1,31 @@
+Justin Reiter (jdreiter)
+	-Created login page and queries to make tables/ insert users
+	-Added bootstrap to the pages for modern look and feel
+	-Researched and discussed possible ideas + platforms
+	-Created and tested sample code for GCP
+	-Detailed Pokemon stats page
+	-Obtained/normalized Pokemon image dataset
+	-Feature for users to favourite/unfavourite Pokemon
+	-Created logout option
+Benjamin Wu (bjwu)
+	-Obtained and imported data for pokemon into tables
+	-Implemented search and main page for finding pokemon
+	-Researched and discussed possible ideas + platforms
+	-Created and tested sample code for GCP
+	-Randomly generate Pokemon instances for players to team with
+	-Created schema for attacks/parties
+	-Created functionality to add/remove/sort Pokemon parties
+SK Sadman Sayeed (sssayeed)
+	-Created report for milestone 1
+	-Discussed layout of project and databases
+	-Researched and discussed possible ideas + platforms
+	-Created and tested sample code for GCP
+Aidan Campbell (aj6campb)
+	-Discussed layout of project and databases
+	-Researched and discussed possible ideas + platforms
+	-Created and tested sample code for GCP
+	-Created profile page
+Kevin Xian (k43zhu) -- New member in group
+	-Worked on scripts to obtain various pokemon data (moves/types/etc)
+	-Discussed layout of project and databases
+	-Web-scraped sites to generate dataset of Pokemon attacks/learnsets
