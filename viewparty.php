@@ -67,23 +67,7 @@ if (!isset($_SESSION['name']) || !isset($_SESSION['uid'])) {
 
 ?>
 
-<div id="navbar">
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">CS348 Project</a>
-      </div>
-      <ul class="nav navbar-nav navbar-right">
-  <li class="nav-item"><a class="nav-link" href="pokemon.php"> Search Pokemon </a></li>
-	<li class="nav-item"><a class="nav-link" href="catchPokemon.php"> Catch Pokemon </a></li>
-	<li class="nav-item"><a class="nav-link" href="organizePokemon.php"> Organize Pokemon </a></li>
-	<li class="nav-item"><a class="nav-link" href="partyshare.php"> Parties </a></li>
-	<li class="nav-item"><a class="nav-link" href="profile.php"><span class="fa fa-user"></span> <?php echo $_SESSION['name'];?></a></li>
-	<li class="nav-item"><a class="nav-link" href="index.php"><span class="fa fa-sign-out"></span> Logout</a></li>
-      </ul>
-    </div>
-  </nav>
-</div>
+<?php include('navbar.php'); ?>
 
 <div class="container" style="padding-top: 2%">
 
@@ -162,5 +146,3 @@ $conn -> close();
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
-
-

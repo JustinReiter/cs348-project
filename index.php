@@ -112,7 +112,7 @@ function test_input($data) {
     	<span class="error"><?php echo $pinErr;?></span>
     </div>
     <button class="btn btn-primary" type="submit" name="submit" value="Submit">Login</button>
-    <button class="btn btn-primary" type="submit" name="create" value"Create">Create New Account</button>
+    <button class="btn btn-primary" type="submit" name="create" value="Create">Create New Account</button>
   </form>
 </div>
 
@@ -172,4 +172,3 @@ $conn -> close();
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
-
