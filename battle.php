@@ -205,7 +205,8 @@ function test_input($data) {
 <?php include('navbar.php'); ?>
 
 <div class="container" padding-top="4%">
-  <h5 id="res">Waiting for response</h5>
+	<br>
+  <h5 id="res">Waiting for response...</h5>
   <p id="msg"></p>
   <button id="start-button" class="btn btn-primary" onclick="startDuel(<?php echo $_SESSION['uid']?>)">Start Duel</button>
 </div>
@@ -261,3 +262,4 @@ $conn -> close();
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
+

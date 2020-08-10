@@ -218,4 +218,3 @@ if (isset($_POST['getUpdate']) && isset($_POST['uid'])) {
 
 $conn->close();
 ?>
-
