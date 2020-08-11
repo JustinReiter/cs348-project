@@ -146,9 +146,9 @@ if (empty($nameErr) && (!isset($_POST["submit"]) || empty($pinErr))) {
 		// Check if any player exists with name -- make new new player not
 		if (empty($result)) {
 			$insert = "INSERT INTO player (uid, name, pin, joined_at) VALUES(null, '$name', '$pin', now())";
-      $uidquery = "SELECT uid FROM player WHERE name = '$name'";
-      $uid = $conn -> query($uidquery) -> fetch_row();
+      			$uidquery = "SELECT uid FROM player WHERE name = '$name'";
 			if ($conn -> query($insert) === TRUE) {
+		      		$uid = $conn -> query($uidquery) -> fetch_row();
                 		$_SESSION['name'] = $name;
 				$_SESSION['uid'] = $uid[0];
 				header('Location: /pokemon.php');

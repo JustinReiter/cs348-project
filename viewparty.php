@@ -136,6 +136,9 @@ if ($result = $conn -> query($query)) {
 }
 
 echo "</table>";
+echo '<div class="btn">';
+echo '<a href="./partyshare.php"><span class="fa fa-arrow-left"></span> Back to Party Page</a>';
+echo '</div>';
 echo "</div>";
 ?>
 

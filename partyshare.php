@@ -123,7 +123,7 @@ echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
     echo "<div class=\"row\">";
         if ($result = $conn -> query($finalQuery)) {
         while ($row = $result -> fetch_row()) {
-            if($row[1] == $_SESSION['uid'] || $row[0] == $_SESSION['name'] ) continue;
+            //if($row[1] == $_SESSION['uid'] || $row[0] == $_SESSION['name'] ) continue;
             $imageQuery = "SELECT pid FROM party, pokemon_inst WHERE party.uid = pokemon_inst.uid AND party.iid = pokemon_inst.iid AND party.uid = " . $row[1];
             $imgresult = $conn -> query($imageQuery);
             $img = $imgresult ->fetch_row();
@@ -138,13 +138,13 @@ echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
                         $pokeresult = $conn -> query($pokequery);
                         $poke = $pokeresult -> fetch_row();
                         //echo "<p class=\"card-text\"> | " . $poke[0] . " | ";
-                        echo "<span class=\"badge badge-dark\">". $poke[0] . "</span>";
+                        echo "<span class=\"badge badge-dark\">". $poke[0] . "</span> ";
                         while($img = $imgresult ->fetch_row()){
                             $pokequery = "SELECT name FROM pokemon WHERE pid =" . $img[0];
                             $pokeresult = $conn -> query($pokequery);
                             $poke = $pokeresult -> fetch_row();
                             //echo $poke[0] . " | ";
-                            echo "<span class=\"badge badge-dark\">". $poke[0] . "</span>";
+                            echo "<span class=\"badge badge-dark\">". $poke[0] . "</span> ";
                         }
                         echo "</p>";
                         echo "<a href='./viewparty.php?user=" . $row[1] . "'  class=\"btn btn-info\">View Party</a>";
@@ -155,7 +155,7 @@ echo "<div class=\"mx-auto\" style=\"width: sm-12\">";
         }
         $result -> free_result();
         }
-    echo "</div>";
+echo "</div>";
 echo "</div>";
 
 
