@@ -35,6 +35,9 @@ php -S localhost:8080
 
 Implemented features:
 
+i)    Implemented a battle system to use your party to play PvP against another player in real time
+      Client page implemented in battle.php with battleServer.php handling game logic and updates
+
 i)    Login/Create Account to Persist Player Data Across Multiple Sessions
       Primarily implemented in index.php
       
@@ -60,4 +63,5 @@ vii)  Detailed individual Pokemon stats with images
 
 Link to deployed version:
 
-https://cs348demo-279318.uc.r.appspot.com/
+(updated) https://cs348-project-279406.uk.r.appspot.com/
+(old) https://cs348demo-279318.uc.r.appspot.com/
