@@ -113,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Missing radio button
         $error_msg_party = "Cannot swap as you have not selected a radio button in both the 'Swap A' and 'Swap B' column.";
         $message = "CANNOT SWAP";
-        echo "<script type='text/javascript'>alert(" . $_POST["id_swap_a"] . " & " . $_POST["id_swap_b"] . ");</script>";
       } else {
         $iid_a = $_POST["id_swap_a"];
         $iid_b = $_POST["id_swap_b"];

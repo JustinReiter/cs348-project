@@ -27,6 +27,19 @@ session_start();
 			data = $.parseJSON(data);
 			if (data.success) {
 				if (!data.gameInProgress) {
+					// Game was in progress before and just ended
+					if (document.getElementById("battle-div").style.display !== 'none') {
+						if (data.numPartyAlive == 0) {
+							// Game over... lose
+							document.getElementById("battle-div").style.display = 'none';
+							alert("Your opponent has knocked out your last Pokemon, " + document.getElementById("player-pkm-name").innerText + " and won the battle. Keep training harder for next time!");
+						} else {
+							// Opponent forfeit... win
+							alert("Your opponent has forfeit and left the battle. You have been declared the victor of this battle! Congratulations!");
+						}
+						document.getElementById("player-pkm-hp").innerText = 9999;
+					}
+
 					// If no game is in progress, hide battle pane and show start button
 					document.getElementById("start-button").style.display = '';
 					document.getElementById("battle-div").style.display = 'none';
@@ -36,7 +49,8 @@ session_start();
 					document.getElementById("battle-div").style.display = '';
 
 					// Only do this once to get pokemon details
-					if (initialRequest) {
+					if (true) {
+					// if (initialRequest) {
 						startDuel(uid);
 						initialRequest = false;
 					}
@@ -45,7 +59,8 @@ session_start();
 					disableMoveButtons(false);
 				} else {
 					// Only do this once to get pokemon details
-					if (initialRequest) {
+					if (true) {
+					// if (initialRequest) {
 						startDuel(uid);
 						initialRequest = false;
 					}
@@ -54,11 +69,35 @@ session_start();
 					disableMoveButtons(true);
 				}
 
+				if (data.gameInProgress) {
+					document.getElementById("player-pkm-remaining").innerText = data.playerPokemonRemaining;
+					document.getElementById("enemy-pkm-remaining").innerText = data.enemyPokemonRemaining;
+
+					var oldHp = parseInt(document.getElementById("player-pkm-hp").innerText);
+					var newHp = parseInt(data.playerHP);
+					var oldNickname = document.getElementById("player-pkm-name").innerText;
+					var newNickname = data.playerNickname;
+					// Update pokemon name/hp
+					document.getElementById("player-pkm-hp").innerText = data.playerHP;
+					document.getElementById("player-img").src = "img/" + data.playerPid + ".png";
+					document.getElementById("player-pkm-name").innerText = data.playerNickname;
+
+					document.getElementById("move-1").innerText = data.move1;
+					document.getElementById("move-2").innerText = data.move2;
+					document.getElementById("move-3").innerText = data.move3;
+					document.getElementById("move-4").innerText = data.move4;
+
+					if (oldHp < newHp) {
+						// HP going up means old pokemon fainted and new one switched in
+						alert(oldNickname + " has been knocked out! You send out " + newNickname + " to continue the battle.");
+					}
+				}
+
 				document.getElementById("res").innerText = data.res;
 				document.getElementById("msg").innerText = data.msg;
 
-				// Ping server after 5 seconds (acts asynchronously)
-				setTimeout(battleUpdate, 5000, uid);
+				// Ping server after 2 seconds (acts asynchronously)
+				setTimeout(battleUpdate, 2000, uid);
 			} else {
 				// There was an error... Display error on page
 				document.getElementById("res").innerText = "Response: " + data.error;
@@ -71,6 +110,21 @@ session_start();
 		});
 	}
 
+	function forfeit(uid) {
+		$.ajax({
+		url: './battleServer.php',
+		type: 'POST',
+		data: {uid: uid, forfeit: true},
+		success: function(data) {
+			data = $.parseJSON(data);
+			if (data.success) {
+				document.getElementById("battle-div").style.display = 'none';
+				document.getElementById("player-pkm-hp").innerText = 9999;
+				alert("You have forfeit and have been declared as the loser of the battle.")
+			}
+		}
+		});
+	}
 
 	/**
 	* Starts duel and grabs pokemon information to display on screen
@@ -85,7 +139,7 @@ session_start();
 			data = $.parseJSON(data);
 			if (data.success) {
 				// Update pokemon and battle information
-				document.getElementById("res").innerText = "Starting game";
+				// document.getElementById("res").innerText = "Starting game";
 				document.getElementById("start-button").style.display = 'none';
 
 				// Images... Do this first as we need to get img from backend
@@ -107,6 +161,11 @@ session_start();
 				// Lastly, show battle pane
 				document.getElementById("battle-div").style.display = '';
 			}
+			/*
+			if (data.searching) {
+				document.getElementById("res").innerText = "Searching for an opponent...";
+			}
+			*/
 		}
 		});
 	}
@@ -126,9 +185,34 @@ session_start();
 			if (data.success) {
 				// Disable player move buttons and update game info
 				disableMoveButtons(true);
+				alert(data.effectiveness + " You dealt " + data.damage + " using " + data.move_name + " to " + document.getElementById("enemy-pkm-name").innerText + ".");
+				if (data.newPokemon) {
+					// Images... Do this first as we need to get img from backend
+					document.getElementById("opponent-img").src = "img/" + data.enemyPid + ".png";
+					// Update pokemon name/hp
+					var oldPokemon = document.getElementById("enemy-pkm-name").innerText;
+					var newPokemon = data.enemyNickname;
+					document.getElementById("enemy-pkm-name").innerText = data.enemyNickname;
+
+					document.getElementById("move-1").innerText = data.newMove1;
+					document.getElementById("move-2").innerText = data.newMove2;
+					document.getElementById("move-3").innerText = data.newMove3;
+					document.getElementById("move-4").innerText = data.newMove4;
+
+					alert("You have knocked your opponent's " + oldPokemon + ". They have sent out " + newPokemon + " to fight on.");
+				}
 
 				document.getElementById("res").innerText = "Opponent's Turn";
 				document.getElementById("enemy-pkm-hp").innerText = data.enemyHP;
+
+				document.getElementById("enemy-pkm-remaining").innerText = data.enemyPokemonRemaining;
+
+				if (data.win) {
+					var oldPokemon = document.getElementById("enemy-pkm-name").innerText;
+					document.getElementById("player-pkm-hp").innerText = 9999;
+					document.getElementById("battle-div").style.display = 'none';
+					alert("Congratulations! You have won the battle by knocking out your opponent's final Pokemon, " + oldPokemon);
+				}
 			}
 		}
 		});
@@ -139,6 +223,7 @@ session_start();
 		document.getElementById("move-2").disabled = shouldDisable;
 		document.getElementById("move-3").disabled = shouldDisable;
 		document.getElementById("move-4").disabled = shouldDisable;
+		document.getElementById("forfeit").disabled = shouldDisable;
 	}
 
 </script>
@@ -218,6 +303,7 @@ function test_input($data) {
 				<p id="enemy-pkm-hp" class="card-text">X / X HP</p>
 			</div>
 			<div class="col-md-4">
+				<p id="enemy-pkm-remaining" class="card-text">X / X Pokemon Remaining</p>
 				<img id="opponent-img" src="" class="card-img" alt="Opponent Pokemon">
 			</div>
 		</div>
@@ -226,6 +312,7 @@ function test_input($data) {
 		<div class="row no gutters">
 			<div class="col-md-4">
 				<img id="player-img" src="" class="card-img" alt="Player Pokemon">
+				<p id="player-pkm-remaining" class="card-text">X / X Pokemon Remaining</p>
 			</div>
 			<div class="col-md-4">
 				<h5 id="player-pkm-name" class="card-title">Player Pokemon</h5>
@@ -247,11 +334,11 @@ function test_input($data) {
 						<td><button id="move-4" class="btn" onclick="useMove(<?php echo $_SESSION['uid']?>, 'move_4')">Move 4</button></td>
 					</tr>
 				</table>
+				<button id="forfeit" class="btn" onclick="forfeit(<?php echo $_SESSION['uid']?>)">Forfeit</button>
 			</div>
 		</div>
 	</div>
 </div>
-
 
 <?php
 
