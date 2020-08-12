@@ -1,3 +1,7 @@
+-- TO-DO: Should reference pokemon_inst iid instead of pokemon pid
+-- and mark pokemon_inst with bool flag
+-- for when they are released instead of deleting them
+-- from the table to maintain foreign key constraint
 CREATE TABLE turn
 (
     turn_number integer AUTO_INCREMENT NOT NULL,

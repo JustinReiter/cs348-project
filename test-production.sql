@@ -1,3 +1,6 @@
+-- Run after running CreateTableSQLQueries/AAA_clean_generated_data.sql
+-- and AAA_init_test.sql
+
 -- Find pokemon that are of type fire and print the pokedex number, name, types and generation -- Only 10 results shown to shorten .out file (pokemon.php)
 SELECT pid, name, type1, type2, gen FROM pokemon WHERE type1="fire" OR type2="fire" LIMIT 10;
 

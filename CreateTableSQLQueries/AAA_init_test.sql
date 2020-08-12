@@ -2540,6 +2540,12 @@ CREATE INDEX pokemon_name ON pokemon(name);
 -- so a index is not automatically created for it by the database
 CREATE INDEX player_details ON player(name, pin);
 
+-- TO-DO: Should reference pokemon_inst iid instead of pokemon pid
+-- for pokemon1 and pokemon2 and mark pokemon_inst with bool flag
+-- for when they are released instead of deleting them
+-- from the table to maintain foreign key constraint
+-- May be better to reference a party instead of party_alive1
+-- and party_alive2 strings to ensure data validity/consistency
 CREATE TABLE battle
 (
     gid integer AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -2557,7 +2563,10 @@ CREATE TABLE battle
     FOREIGN KEY(pokemon2) REFERENCES pokemon(pid)
 );
 
-
+-- TO-DO: Should reference pokemon_inst iid instead of pokemon pid
+-- and mark pokemon_inst with bool flag
+-- for when they are released instead of deleting them
+-- from the table to maintain foreign key constraint
 CREATE TABLE turn
 (
     turn_number integer AUTO_INCREMENT NOT NULL,

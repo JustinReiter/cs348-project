@@ -1,4 +1,5 @@
 Justin Reiter (jdreiter)
+	-Developed the structure for battles w/ updates and playable moves table
 	-Created login page and queries to make tables/ insert users
 	-Added bootstrap to the pages for modern look and feel
 	-Researched and discussed possible ideas + platforms
@@ -8,6 +9,8 @@ Justin Reiter (jdreiter)
 	-Feature for users to favourite/unfavourite Pokemon
 	-Created logout option
 Benjamin Wu (bjwu)
+	-Completed the battle implementation w/ PvP, damage calculation and queuing
+	-Obtained and imported data for pokemon-specific learnable moves
 	-Obtained and imported data for pokemon into tables
 	-Implemented search and main page for finding pokemon
 	-Researched and discussed possible ideas + platforms
@@ -16,6 +19,7 @@ Benjamin Wu (bjwu)
 	-Created schema for attacks/parties
 	-Created functionality to add/remove/sort Pokemon parties
 SK Sadman Sayeed (sssayeed)
+	-Implemented pages to share parties with others + view stats of individual party pokemon
 	-Created report for milestone 1
 	-Discussed layout of project and databases
 	-Researched and discussed possible ideas + platforms
@@ -25,7 +29,7 @@ Aidan Campbell (aj6campb)
 	-Researched and discussed possible ideas + platforms
 	-Created and tested sample code for GCP
 	-Created profile page
-Kevin Xian (k43zhu) -- New member in group
+Kevin Xian (k43zhu) -- Joined after Milestone 0 (15 June 2020)
 	-Worked on scripts to obtain various pokemon data (moves/types/etc)
 	-Discussed layout of project and databases
 	-Web-scraped sites to generate dataset of Pokemon attacks/learnsets
